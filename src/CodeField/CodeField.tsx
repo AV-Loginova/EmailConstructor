@@ -4,6 +4,7 @@ import { HTMLtemplate } from "../data/template";
 import QuestionIcon from "../assets/question.svg";
 import DownloadIcon from "../assets/download.svg";
 import CopyIcon from "../assets/copy.svg";
+import UndoIcon from "../assets/undo.svg";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/htmlmixed/htmlmixed";
@@ -15,7 +16,7 @@ interface CodeFieldProps {
 
 const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
   const [htmlCode, setHtmlCode] = useState<string>(HTMLtemplate);
-  const editorRef = useRef<CodeMirror.Editor | null>(null);
+  const editorRef = useRef<any | null>(null);
 
   useEffect(() => {
     if (isClicked && editorRef.current) {
@@ -68,8 +69,10 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
   };
 
   const copyToClipboard = () => {
+    // Remove comments and empty lines before copying to clipboard
+    const codeWithoutComments = removeCommentsAndEmptyLines(htmlCode);
     navigator.clipboard
-      .writeText(htmlCode)
+      .writeText(codeWithoutComments)
       .then(() => {
         console.log("Text copied to clipboard");
       })
@@ -79,13 +82,39 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
   };
 
   const downloadHtmlFile = () => {
+    // Remove comments and empty lines before downloading
+    const codeWithoutComments = removeCommentsAndEmptyLines(htmlCode);
     const element = document.createElement("a");
-    const file = new Blob([htmlCode], { type: "text/html" });
+    const file = new Blob([codeWithoutComments], { type: "text/html" });
     element.href = URL.createObjectURL(file);
     element.download = "index.html";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  };
+
+  const undoLastChange = () => {
+    if (editorRef.current) {
+      const editor = editorRef.current.editor;
+      editor.undo();
+      editor.undo();
+      editor.focus();
+    }
+  };
+
+  const removeEmptyLines = (code: string) => {
+    // Remove consecutive empty lines
+    return code.replace(/\n\s*\n/g, "\n");
+  };
+
+  const removeCommentsAndEmptyLines = (code: string) => {
+    // Remove HTML comments
+    let codeWithoutComments = code.replace(/<!--[\s\S]*?-->/g, "");
+
+    // Remove consecutive empty lines after comments removal
+    codeWithoutComments = removeEmptyLines(codeWithoutComments);
+
+    return codeWithoutComments;
   };
 
   return (
@@ -99,9 +128,8 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
         <img
           src={CopyIcon}
           width="20"
-          alt="Download Icon"
+          alt="Copy Icon"
           className="text-[#7ca2b2]"
-          color="#7ca2b2"
         />
       </button>
       <button
@@ -115,22 +143,33 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
           width="20"
           alt="Download Icon"
           className="text-[#7ca2b2]"
-          color="#7ca2b2"
+        />
+      </button>
+      <button
+        onClick={undoLastChange}
+        className="border-[1px] border-[#253237] h-30px absolute top-[-37px] left-[74px] z-50
+        bg-[#253237e0] text-[#7ca2b2] p-2 rounded-md rounded-b-none hover:bg-[#253237b4] 
+        transition-all duration-300"
+      >
+        <img
+          src={UndoIcon}
+          width="20"
+          alt="Undo Icon"
+          className="text-[#7ca2b2]"
         />
       </button>
       <div
-        onClick={copyToClipboard}
-        className="h-30px absolute top-[-37px] left-[74px] z-50 p-2 cursor-pointer"
+        className="h-30px absolute top-[-37px] left-[110px] z-50 p-2 cursor-pointer"
         title="Элементы, которые должны находиться внутри новой строки или списка, отмечены желтой кнопкой."
       >
         <img
           src={QuestionIcon}
           width="20"
-          alt="Download Icon"
+          alt="Question Icon"
           className="text-[#7ca2b2]"
-          color="#7ca2b2"
         />
       </div>
+
       <div
         className="relative flex flex-col w-[47vw] overflow-scroll rounded-md 
       rounded-tl-none h-[80vh]"
