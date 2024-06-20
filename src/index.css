@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  overflow-y: hidden;
+}
+
+.CodeMirror-wrap {
+  height: 80vh;
+}
