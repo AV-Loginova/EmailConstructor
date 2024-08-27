@@ -1,4 +1,5 @@
-export const HTMLtemplate = `<!DOCTYPE html>
+export const HTMLtemplate = `
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -74,7 +75,6 @@ export const HTMLtemplate = `<!DOCTYPE html>
                                 line-height: 20px;
                                 margin: 0;
                                 padding: 0;
-                                text-decoration: none;
                               "
                               data-link-id="21"
                               target="_blank"
@@ -116,7 +116,7 @@ export const HTMLtemplate = `<!DOCTYPE html>
                             <td width="496" style="border-collapse: collapse">
                               <h2
                                 style="
-                                  color: #000000;
+                                  color: #0E0142;
                                   font-family: 'arial', 'helvetica', sans-serif,
                                     'roboto';
                                   font-size: 24px;
@@ -126,11 +126,11 @@ export const HTMLtemplate = `<!DOCTYPE html>
                                   padding: 0;
                                 "
                               >
-                                Hello
+                                Hi
                                 <a
                                   href="#"
                                   style="
-                                    color: #000000;
+                                    color: #0E0142;
                                     font-family: 'arial', 'helvetica',
                                       sans-serif, 'roboto';
                                     font-size: 24px;
@@ -138,12 +138,19 @@ export const HTMLtemplate = `<!DOCTYPE html>
                                   "
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  >{{name}}</a
+                                  >{{contact.name}},</a
                                 >
                               </h2>
                             </td>
                           </tr>
                           <!--Отступ после заголовка -->
+                          <tr>
+                            <td
+                              height="13"
+                              width="496"
+                              style="border-collapse: collapse"
+                            ></td>
+                          </tr>
                           <tr>
                             <td
                               height="13"

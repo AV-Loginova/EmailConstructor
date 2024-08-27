@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Controlled as CodeMirror } from "react-codemirror2";
-import { HTMLtemplate } from "../data/template";
-import QuestionIcon from "../assets/question.svg";
-import DownloadIcon from "../assets/download.svg";
-import CopyIcon from "../assets/copy.svg";
-import UndoIcon from "../assets/undo.svg";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/htmlmixed/htmlmixed";
+import React, { useEffect, useState, useRef } from 'react';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+import { HTMLtemplate } from '../data/template';
+import QuestionIcon from '../assets/question.svg';
+import DownloadIcon from '../assets/download.svg';
+import CopyIcon from '../assets/copy.svg';
+import UndoIcon from '../assets/undo.svg';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/htmlmixed/htmlmixed';
 
 interface CodeFieldProps {
   HTMLCode: [string, number];
@@ -27,19 +27,19 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
   useEffect(() => {
     if (editorRef.current) {
       const editor = editorRef.current.editor;
-      const lineNumberToFocus = 155;
+      const lineNumberToFocus = 162;
       const cursor = editor.getCursor();
       const line = editor.getLine(cursor.line);
       const pos = {
         line: lineNumberToFocus - 1,
         ch: line.length,
-        sticky: "after",
+        sticky: 'after',
       };
       editor.setCursor(pos);
       editor.scrollIntoView({
         line: lineNumberToFocus + 10,
         ch: line.length,
-        sticky: "after",
+        sticky: 'after',
       });
       editor.focus();
     }
@@ -51,14 +51,14 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
       const codeToInsert = HTMLCode[0];
       const cursor = editor.getCursor();
       const line = editor.getLine(cursor.line);
-      const pos = { line: cursor.line, ch: line.length, sticky: "after" };
+      const pos = { line: cursor.line, ch: line.length, sticky: 'after' };
       const newPos = {
         line: cursor.line + HTMLCode[1] + 1,
         ch: line.length,
-        sticky: "after",
+        sticky: 'after',
       };
       editor.replaceRange(codeToInsert, pos);
-      editor.replaceRange("\n", newPos);
+      editor.replaceRange('\n', newPos);
       editor.setCursor(newPos);
       editor.focus();
     }
@@ -74,20 +74,20 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
     navigator.clipboard
       .writeText(codeWithoutComments)
       .then(() => {
-        console.log("Text copied to clipboard");
+        console.log('Text copied to clipboard');
       })
       .catch((err) => {
-        console.error("Error copying text: ", err);
+        console.error('Error copying text: ', err);
       });
   };
 
   const downloadHtmlFile = () => {
     // Remove comments and empty lines before downloading
     const codeWithoutComments = removeCommentsAndEmptyLines(htmlCode);
-    const element = document.createElement("a");
-    const file = new Blob([codeWithoutComments], { type: "text/html" });
+    const element = document.createElement('a');
+    const file = new Blob([codeWithoutComments], { type: 'text/html' });
     element.href = URL.createObjectURL(file);
-    element.download = "index.html";
+    element.download = 'index.html';
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -104,12 +104,12 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
 
   const removeEmptyLines = (code: string) => {
     // Remove consecutive empty lines
-    return code.replace(/\n\s*\n/g, "\n");
+    return code.replace(/\n\s*\n/g, '\n');
   };
 
   const removeCommentsAndEmptyLines = (code: string) => {
     // Remove HTML comments
-    let codeWithoutComments = code.replace(/<!--[\s\S]*?-->/g, "");
+    let codeWithoutComments = code.replace(/<!--[\s\S]*?-->/g, '');
 
     // Remove consecutive empty lines after comments removal
     codeWithoutComments = removeEmptyLines(codeWithoutComments);
@@ -179,8 +179,8 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
           value={htmlCode}
           onBeforeChange={handleCodeChange}
           options={{
-            mode: "htmlmixed",
-            theme: "material",
+            mode: 'htmlmixed',
+            theme: 'material',
             lineNumbers: true,
             lineWrapping: true,
           }}
