@@ -1,12 +1,14 @@
-export const HTMLtemplate = `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-  </head>
-  <body
-    style="margin: 0; padding: 0; max-width: 100%; background-color: #f5f5f5"
-  >
+export const HTMLtemplateEn = `<table
+  style="
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    background-color: #f5f5f5;
+  "
+>
+  <tr>
+    <td>
     <center>
       <table
         border="0"
@@ -342,6 +344,7 @@ export const HTMLtemplate = `
         </table>
       </table>
     </center>
-  </body>
-</html>
+    </td>
+  </tr>
+</table>
 `;

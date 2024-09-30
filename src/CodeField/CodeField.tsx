@@ -1,10 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import { HTMLtemplate } from '../data/template';
+import { HTMLtemplateEn } from '../data/templateEn';
+import { HTMLtemplateEs } from '../data/templateEs';
+import { HTMLtemplatePt } from '../data/templatePt';
+import { HTMLtemplateTr } from '../data/templateTr';
 import QuestionIcon from '../assets/question.svg';
 import DownloadIcon from '../assets/download.svg';
 import CopyIcon from '../assets/copy.svg';
 import UndoIcon from '../assets/undo.svg';
+import TrashIcon from '../assets/trash.svg';
+
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
@@ -12,11 +17,30 @@ import 'codemirror/mode/htmlmixed/htmlmixed';
 interface CodeFieldProps {
   HTMLCode: [string, number];
   isClicked: number;
+  lang: string;
 }
 
-const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
-  const [htmlCode, setHtmlCode] = useState<string>(HTMLtemplate);
+const languageTemplates: Record<string, string> = {
+  EN: HTMLtemplateEn,
+  ES: HTMLtemplateEs,
+  PT: HTMLtemplatePt,
+  TR: HTMLtemplateTr,
+};
+
+const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
+  const [htmlCode, setHtmlCode] = useState<string>('');
   const editorRef = useRef<any | null>(null);
+
+  useEffect(() => {
+    const initialHistory = localStorage.getItem('mail');
+    if (initialHistory) {
+      setHtmlCode(JSON.parse(initialHistory));
+    } else {
+      const defaultTemplate = languageTemplates[lang];
+      setHtmlCode(defaultTemplate);
+      localStorage.setItem('mail', JSON.stringify(defaultTemplate));
+    }
+  }, [lang]);
 
   useEffect(() => {
     if (isClicked && editorRef.current) {
@@ -45,6 +69,11 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
     }
   }, []);
 
+  const clearLocalStorage = () => {
+    localStorage.removeItem('mail');
+    setHtmlCode(HTMLtemplateEn);
+  };
+
   const handleInsertCode = () => {
     if (editorRef.current) {
       const editor = editorRef.current.editor;
@@ -66,6 +95,7 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
 
   const handleCodeChange = (editor: string, data: string, value: string) => {
     setHtmlCode(value);
+    localStorage.setItem('mail', JSON.stringify(value));
   };
 
   const copyToClipboard = () => {
@@ -158,8 +188,23 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked }) => {
           className="text-[#7ca2b2]"
         />
       </button>
+
+      <button
+        onClick={clearLocalStorage}
+        className="border-[1px] border-[#253237] h-30px absolute top-[-37px] left-[111px] z-50
+        bg-[#253237e0] text-[#7ca2b2] p-2 rounded-md rounded-b-none hover:bg-[#253237b4] 
+        transition-all duration-300"
+      >
+        {' '}
+        <img
+          src={TrashIcon}
+          width="20"
+          alt="Undo Icon"
+          className="text-[#7ca2b2]"
+        />
+      </button>
       <div
-        className="h-30px absolute top-[-37px] left-[110px] z-50 p-2 cursor-pointer"
+        className="h-30px absolute top-[-37px] left-[150px] z-50 p-2 cursor-pointer"
         title="Элементы, которые должны находиться внутри новой строки или списка, отмечены желтой кнопкой."
       >
         <img
