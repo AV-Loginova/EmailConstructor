@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { HTMLtemplateEn } from '../data/templateEn';
-import { HTMLtemplateEs } from '../data/templateEs';
-import { HTMLtemplatePt } from '../data/templatePt';
-import { HTMLtemplateTr } from '../data/templateTr';
 import QuestionIcon from '../assets/question.svg';
 import DownloadIcon from '../assets/download.svg';
 import CopyIcon from '../assets/copy.svg';
@@ -22,9 +19,6 @@ interface CodeFieldProps {
 
 const languageTemplates: Record<string, string> = {
   EN: HTMLtemplateEn,
-  ES: HTMLtemplateEs,
-  PT: HTMLtemplatePt,
-  TR: HTMLtemplateTr,
 };
 
 const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
