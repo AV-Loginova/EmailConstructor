@@ -1,38 +1,31 @@
-import React, { useState } from 'react';
-import CodeField from './CodeField/CodeField';
-import EditSection from './EditSection/EditSection';
-import { Link } from 'react-router-dom';
+import { RootState } from './store/store';
+import { Route, Routes } from 'react-router-dom';
+import Translate from './Translate/Translate';
+import MainPage from './main/MainPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme } from './store/themeSlice';
+import Toggle from './components/Toggle';
 
-const App: React.FC = () => {
-  const [HTMLCode, setHTMLCode] = useState<[string, number]>(['', 0]);
-  const [count, setCount] = useState<number>(0);
-  const [lang, setLang] = useState<string>('EN');
-
-  const handleHTML = (e: [string, number]) => {
-    setHTMLCode(e);
-    setCount(count + 1);
+const App = () => {
+  const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) => state.theme.theme);
+  const isDark = theme === 'dark';
+  const handleOnChange = () => {
+    dispatch(toggleTheme());
   };
-
-  const handleLangChange = (event: React.MouseEvent<HTMLElement>) => {
-    localStorage.removeItem('mail');
-    setLang(event.currentTarget.id);
-    event.currentTarget.classList.add('active');
-  };
-
   return (
-    <div className="w-[100vw] flex flex-col items-center p-1 pt-2">
-      <div className="absolute left-5 flex gap-1">
-        <Link className="btn btn-secondary" to="/translate">
-          Перевести
-        </Link>
-      </div>
-
-      <h1 className="text-[32px] text-[#2d2d2d] font-bold mb-2">
-        📧 Email constructor
-      </h1>
-      <EditSection setHTMLCode={handleHTML} />
-      <section className="w-[100vw] justify-between">
-        <CodeField lang={lang} HTMLCode={HTMLCode} isClicked={count} />
+    <div data-theme={`${theme === 'dark' ? 'dark' : 'light'}`}>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/translate" element={<Translate />} />
+      </Routes>
+      <section className="absolute bottom-1 left-3">
+        <Toggle
+          onChange={handleOnChange}
+          id="theme"
+          isChecked={isDark}
+          label={`${isDark ? 'Светлая' : 'Темная'} тема`}
+        ></Toggle>
       </section>
     </div>
   );

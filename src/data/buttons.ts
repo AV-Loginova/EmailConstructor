@@ -1,12 +1,21 @@
-export const buttons = [
+import QuestionIcon from '../assets/question.svg';
+import DownloadIcon from '../assets/download.svg';
+import CopyIcon from '../assets/copy.svg';
+import UndoIcon from '../assets/undo.svg';
+import TrashIcon from '../assets/trash.svg';
+
+type ActionType = 'copy' | 'download' | 'undo' | 'clear' | 'none';
+
+//height 22
+export const codeEditButtons = [
   {
     id: 1,
     name: 'Новая строка',
     lines: 8,
-    variant: 'success',
+    variant: 'neutral',
     html: `<tr>
     <td
-      height="14"
+      height="22"
       width="496"
       style="border-collapse: collapse"
     >
@@ -19,7 +28,7 @@ export const buttons = [
     id: 2,
     name: 'Параграф',
     lines: 18,
-    variant: 'success',
+    variant: 'neutral',
     html: `<tr>
       <td
         height="15"
@@ -32,7 +41,7 @@ export const buttons = [
           font-weight: 400;
           line-height: 20px;
           margin: 0;
-          padding: 0 0 8px 0;
+          padding: 0;
         "
         >
         Вместо меня должен быть текст
@@ -45,7 +54,7 @@ export const buttons = [
     id: 3,
     name: 'Картинка',
     lines: 6,
-    variant: 'warning',
+    variant: 'default',
     html: ` <img
     src=""
     alt="Мне нужен источник"
@@ -59,7 +68,7 @@ export const buttons = [
     id: 4,
     name: 'Заголовок',
     lines: 16,
-    variant: 'success',
+    variant: 'neutral',
     html: `
     <tr>
       <td height="13" width="496" style="border-collapse: collapse">
@@ -84,7 +93,7 @@ export const buttons = [
     id: 5,
     name: 'Кнопка',
     lines: 32,
-    variant: 'success',
+    variant: 'neutral',
     html: `<tr>
     <td align="left">
       <table border="0" cellpadding="0" cellspacing="0">
@@ -123,14 +132,14 @@ export const buttons = [
     id: 6,
     name: 'Ссылка',
     lines: 14,
-    variant: 'warning',
+    variant: 'default',
     html: ` <a rel="noopener noreferrer"
       href=""
       style="
-        color: #0E0142;
+        color: #5f43d0;
         font-family: 'arial', 'helvetica', sans-serif, 'roboto';
         font-size: 16px;
-        font-weight: 700;
+        font-weight: 400;
         line-height: 20px;
         margin: 0;
         padding: 0;
@@ -145,7 +154,7 @@ export const buttons = [
     id: 7,
     name: 'Список',
     lines: 17,
-    variant: 'success',
+    variant: 'neutral',
     html: ` <tr>
       <td style="border-collapse: collapse">
         <ul
@@ -170,11 +179,73 @@ export const buttons = [
     id: 8,
     name: 'Элемент списка',
     lines: 3,
-    variant: 'warning',
-    html: ` <li style="padding-bottom: 8px"
+    variant: 'default',
+    html: ` <li style="padding: 2px 0 2px 6px"
       >
       Я элемент списка, помести меня в список
       </li>
   `,
+  },
+  {
+    id: 9,
+    name: 'Фон',
+    lines: 19,
+    variant: 'neutral',
+    html: ` <tr>
+    <td
+      height="14"
+      width="496"
+      style="border-collapse: collapse; background-color: #f9f7ff"
+    >
+      <p style="
+          padding: 18px 16px;          
+          border-collapse: collapse;
+          color: #0E0142;
+          font-family: 'arial', 'helvetica', sans-serif, 'roboto';
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 20px;
+          margin: 0;
+          ">
+<!-- Я элемент с фоном -->
+      </p>
+    </td>
+  </tr>
+  `,
+  },
+];
+
+export const templateManipulateButtons = [
+  {
+    id: 1,
+    alt: 'Copy Icon',
+    src: CopyIcon,
+    action: 'copy' as ActionType,
+  },
+  {
+    id: 2,
+    alt: 'Download Icon',
+    src: DownloadIcon,
+    action: 'download' as ActionType,
+  },
+  {
+    id: 3,
+    alt: 'Undo Icon',
+    src: UndoIcon,
+    action: 'undo' as ActionType,
+  },
+  {
+    id: 4,
+    alt: 'Clear Icon',
+    src: TrashIcon,
+    action: 'clear' as ActionType,
+  },
+  {
+    id: 5,
+    alt: 'Question Icon',
+    src: QuestionIcon,
+    action: 'none' as ActionType,
+    title:
+      'Элементы, которые должны находиться внутри новой строки или списка, отмечены серой кнопкой.',
   },
 ];

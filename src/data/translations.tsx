@@ -44,4 +44,20 @@ export const translationsMap: TranslationMap = {
     HI: 'डेमो बुक करें',
     ID: 'Pesan demo',
   },
+  'Need help?': {
+    EN: 'Need help?',
+    ES: '¿Necesitas ayuda?',
+    PT: 'Precisa de ajuda?',
+    TR: 'Yardım lazım mı?',
+    HI: 'क्या मदद चाहिए?',
+    ID: 'Butuh bantuan?',
+  },
+  'Columbus Ave Suite 407, San Francisco': {
+    EN: 'Columbus Ave Suite 407, San Francisco',
+    ES: 'Columbus Ave Suite 407, San Francisco',
+    PT: 'Columbus Ave Suite 407, San Francisco',
+    TR: 'Columbus Ave Suite 407, San Francisco',
+    HI: 'कोलंबस एवेन्यू, सुइट 407, सैन फ्रांसिस्को',
+    ID: 'Columbus Ave Suite 407, San Francisco',
+  },
 };

@@ -1,6 +1,5 @@
-import React from "react";
-import Button from "react-bootstrap/Button";
-import { buttons } from "../data/buttons";
+import React from 'react';
+import { codeEditButtons } from '../data/buttons';
 
 interface EditSectionProps {
   setHTMLCode: (e: [string, number]) => void;
@@ -9,16 +8,16 @@ interface EditSectionProps {
 const EditSection: React.FC<EditSectionProps> = ({ setHTMLCode }) => {
   return (
     <section className="flex gap-3">
-      {buttons.map((button) => (
-        <Button
+      {codeEditButtons.map((button) => (
+        <button
+          className={`btn btn-${button.variant}`}
           onClick={() => {
             setHTMLCode([button.html, button.lines]);
           }}
-          variant={button.variant}
           key={button.id}
         >
           {button.name}
-        </Button>
+        </button>
       ))}
     </section>
   );

@@ -1,40 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import { HTMLtemplateEn } from '../data/templateEn';
-import QuestionIcon from '../assets/question.svg';
-import DownloadIcon from '../assets/download.svg';
-import CopyIcon from '../assets/copy.svg';
-import UndoIcon from '../assets/undo.svg';
-import TrashIcon from '../assets/trash.svg';
 
 import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
+import 'codemirror/theme/ayu-mirage.css';
+import 'codemirror/theme/darcula.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
+import { templateManipulateButtons } from '../data/buttons';
+import IconButton from '../components/IconButton';
 
 interface CodeFieldProps {
+  HTMLTemplate: string;
   HTMLCode: [string, number];
   isClicked: number;
-  lang: string;
 }
 
-const languageTemplates: Record<string, string> = {
-  EN: HTMLtemplateEn,
-};
-
-const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
-  const [htmlCode, setHtmlCode] = useState<string>('');
+const CodeField: React.FC<CodeFieldProps> = ({
+  HTMLTemplate,
+  HTMLCode,
+  isClicked,
+}) => {
+  const initialHistory = localStorage.getItem('mail');
+  const [htmlCode, setHtmlCode] = useState<string>(
+    initialHistory ? JSON.parse(initialHistory) : HTMLTemplate
+  );
   const editorRef = useRef<any | null>(null);
 
   useEffect(() => {
-    const initialHistory = localStorage.getItem('mail');
-    if (initialHistory) {
-      setHtmlCode(JSON.parse(initialHistory));
-    } else {
-      const defaultTemplate = languageTemplates[lang];
-      setHtmlCode(defaultTemplate);
-      localStorage.setItem('mail', JSON.stringify(defaultTemplate));
-    }
-  }, [lang]);
+    setHtmlCode(HTMLTemplate);
+  }, [HTMLTemplate]);
 
   useEffect(() => {
     if (isClicked && editorRef.current) {
@@ -45,7 +38,7 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
   useEffect(() => {
     if (editorRef.current) {
       const editor = editorRef.current.editor;
-      const lineNumberToFocus = 162;
+      const lineNumberToFocus = 164;
       const cursor = editor.getCursor();
       const line = editor.getLine(cursor.line);
       const pos = {
@@ -61,11 +54,13 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
       });
       editor.focus();
     }
-  }, []);
+  }, [localStorage]);
 
   const clearLocalStorage = () => {
+    const currentTemplate = localStorage.getItem('currentTemplate');
+
     localStorage.removeItem('mail');
-    setHtmlCode(HTMLtemplateEn);
+    setHtmlCode(currentTemplate ? JSON.parse(currentTemplate) : '');
   };
 
   const handleInsertCode = () => {
@@ -93,7 +88,6 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
   };
 
   const copyToClipboard = () => {
-    // Remove comments and empty lines before copying to clipboard
     const codeWithoutComments = removeCommentsAndEmptyLines(htmlCode);
     navigator.clipboard
       .writeText(codeWithoutComments)
@@ -106,7 +100,6 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
   };
 
   const downloadHtmlFile = () => {
-    // Remove comments and empty lines before downloading
     const codeWithoutComments = removeCommentsAndEmptyLines(htmlCode);
     const element = document.createElement('a');
     const file = new Blob([codeWithoutComments], { type: 'text/html' });
@@ -127,91 +120,42 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
   };
 
   const removeEmptyLines = (code: string) => {
-    // Remove consecutive empty lines
     return code.replace(/\n\s*\n/g, '\n');
   };
 
   const removeCommentsAndEmptyLines = (code: string) => {
-    // Remove HTML comments
     let codeWithoutComments = code.replace(/<!--[\s\S]*?-->/g, '');
 
-    // Remove consecutive empty lines after comments removal
     codeWithoutComments = removeEmptyLines(codeWithoutComments);
 
     return codeWithoutComments;
   };
 
+  const handlers = {
+    copy: copyToClipboard,
+    download: downloadHtmlFile,
+    undo: undoLastChange,
+    clear: clearLocalStorage,
+    none: () => {},
+  };
+
   return (
     <div className="relative flex justify-between h-[80vh] m-3 p-0">
-      <button
-        onClick={copyToClipboard}
-        className="border-[1px] border-[#253237] h-30px absolute top-[-37px] z-50 
-        bg-[#253237e0] text-[#7ca2b2] p-2 rounded-md rounded-b-none hover:bg-[#253237b4] 
-        transition-all duration-300"
-      >
-        <img
-          src={CopyIcon}
-          width="20"
-          alt="Copy Icon"
-          className="text-[#7ca2b2]"
-        />
-      </button>
-      <button
-        onClick={downloadHtmlFile}
-        className="border-[1px] border-[#253237] h-30px absolute top-[-37px] left-[37px] z-50
-        bg-[#253237e0] text-[#7ca2b2] p-2 rounded-md rounded-b-none hover:bg-[#253237b4] 
-        transition-all duration-300"
-      >
-        <img
-          src={DownloadIcon}
-          width="20"
-          alt="Download Icon"
-          className="text-[#7ca2b2]"
-        />
-      </button>
-      <button
-        onClick={undoLastChange}
-        className="border-[1px] border-[#253237] h-30px absolute top-[-37px] left-[74px] z-50
-        bg-[#253237e0] text-[#7ca2b2] p-2 rounded-md rounded-b-none hover:bg-[#253237b4] 
-        transition-all duration-300"
-      >
-        <img
-          src={UndoIcon}
-          width="20"
-          alt="Undo Icon"
-          className="text-[#7ca2b2]"
-        />
-      </button>
-
-      <button
-        onClick={clearLocalStorage}
-        className="border-[1px] border-[#253237] h-30px absolute top-[-37px] left-[111px] z-50
-        bg-[#253237e0] text-[#7ca2b2] p-2 rounded-md rounded-b-none hover:bg-[#253237b4] 
-        transition-all duration-300"
-      >
-        {' '}
-        <img
-          src={TrashIcon}
-          width="20"
-          alt="Undo Icon"
-          className="text-[#7ca2b2]"
-        />
-      </button>
-      <div
-        className="h-30px absolute top-[-37px] left-[150px] z-50 p-2 cursor-pointer"
-        title="Элементы, которые должны находиться внутри новой строки или списка, отмечены желтой кнопкой."
-      >
-        <img
-          src={QuestionIcon}
-          width="20"
-          alt="Question Icon"
-          className="text-[#7ca2b2]"
-        />
-      </div>
+      <section className="absolute left-2 top-[-27px] flex gap-1">
+        {templateManipulateButtons.map((btn) => (
+          <IconButton
+            clickAction={handlers[btn.action]}
+            imageSource={btn.src}
+            alt={btn.alt}
+            key={btn.id}
+            title={btn.title}
+          />
+        ))}
+      </section>
 
       <div
         className="relative flex flex-col w-[47vw] overflow-scroll rounded-md 
-      rounded-tl-none h-[80vh]"
+       h-[78vh]"
       >
         <CodeMirror
           ref={editorRef}
@@ -219,7 +163,7 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
           onBeforeChange={handleCodeChange}
           options={{
             mode: 'htmlmixed',
-            theme: 'material',
+            theme: 'ayu-mirage',
             lineNumbers: true,
             lineWrapping: true,
           }}
@@ -227,13 +171,13 @@ const CodeField: React.FC<CodeFieldProps> = ({ HTMLCode, isClicked, lang }) => {
         />
       </div>
       <div
-        className="preview w-[47vw] border-[#eaeaea] rounded-md border-[1px] 
+        className="preview w-[47vw] border-[#eaeaea] rounded-md  
       bg-[#ffffff] overflow-y-auto h-[80vh]"
       >
         <pre>
           <iframe
             title="Preview"
-            className="w-[100%] border-[#eaeaea] rounded-md border-[1px] 
+            className="w-[100%] border-[#eaeaea] rounded-md  
             bg-[#ffffff] overflow-y-auto h-[80vh]"
             srcDoc={htmlCode}
           />
