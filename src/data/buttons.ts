@@ -17,7 +17,7 @@ export const codeEditButtons = [
     <td
       height="22"
       width="496"
-      style="border-collapse: collapse"
+      style="height: 22px; line-height: 22px; border-collapse: collapse"
     >
 <!-- Ссылки и картинки вставлять сюда -->
     </td>
@@ -27,21 +27,23 @@ export const codeEditButtons = [
   {
     id: 2,
     name: 'Параграф',
-    lines: 18,
+    lines: 22,
     variant: 'neutral',
     html: `<tr>
       <td
         height="15"
         width="496"
         style="
+          margin: 0;
+          padding: 0;
+          height: 15px;
+          width: 496px;
           border-collapse: collapse;
           color: #0E0142;
           font-family: 'arial', 'helvetica', sans-serif, 'roboto';
           font-size: 16px;
           font-weight: 400;
           line-height: 20px;
-          margin: 0;
-          padding: 0;
         "
         >
         Вместо меня должен быть текст
@@ -59,8 +61,8 @@ export const codeEditButtons = [
     src=""
     alt="Мне нужен источник"
     style=""
-    width=""
-    height=""
+    width="496"
+    style="height: 496px"
   />
   `,
   },
@@ -71,16 +73,17 @@ export const codeEditButtons = [
     variant: 'neutral',
     html: `
     <tr>
-      <td height="13" width="496" style="border-collapse: collapse">
+      <td height="13" width="496" style="height: 13px; width: 496px; border-collapse: collapse">
         <h2
         style="
+        margin: 0;
+        padding: 0;
         color: #0E0142;
         font-family: 'arial', 'helvetica', sans-serif,'roboto';
         font-size: 24px;
         font-weight: 700;
         line-height: 28px;
-        margin: 0;
-        padding: 0;"
+        "
         >
           Я заголовок
         </h2>
@@ -94,31 +97,13 @@ export const codeEditButtons = [
     name: 'Кнопка',
     lines: 32,
     variant: 'neutral',
-    html: `<tr>
-    <td align="left">
+    html: `<tr height="40" style="height:40px"><td align="left">
       <table border="0" cellpadding="0" cellspacing="0">
         <tbody>
-          <tr>
-            <td align="center" bgcolor="#0e0142" style="border-radius: 26px">
-              <a rel="noopener noreferrer"
-                href=""
-                style="
-                    background-color: #0e0142;
-                    border-color: #0e0142;
-                    border-radius: 26px;
-                    border-style: solid;
-                    border-width: 12px 32px 12px 32px;
-                    color: #ffffff;
-                    font-family: 'arial', 'helvetica', sans-serif, 'roboto';
-                    font-size: 16px;
-                    font-weight: 700;
-                    text-decoration: none;
-                    cursor: pointer;
-                  "
-                data-link-id=""
-                target="_blank"
-                rel="noopener noreferrer"
-                >Я кнопка
+          <tr height="40" style="height: 40px">
+            <td align="center" bgcolor="#0e0142" style="border-radius:26px">
+              <a href="" rel="noopener noreferrer" target="_blank" style="background-color:#0e0142;border-color:#0e0142;border-radius:26px;border-style:solid;border-width:12px 32px;color:#ffffff !important;font-family:'arial' , 'helvetica' , sans-serif , 'roboto';font-size:16px;font-weight:700;text-decoration:none" data-link-id="26">
+                Я кнопка
               </a>
             </td>
           </tr>
@@ -144,10 +129,10 @@ export const codeEditButtons = [
         margin: 0;
         padding: 0;
       "
-      data-link-id=""
       target="_blank"
       rel="noopener noreferrer"
-      >Я ссылка</a>
+      >Я ссылка
+    </a>
   `,
   },
   {
@@ -159,14 +144,14 @@ export const codeEditButtons = [
       <td style="border-collapse: collapse">
         <ul
           style="
+            margin: 0;
+            padding: 0;
             list-style: none;
             color: #0E0142;
             font-family: 'arial', 'helvetica', sans-serif, 'roboto';
             font-size: 16px;
             font-weight: 400;
             line-height: 20px;
-            margin: 0;
-            padding: 0;
           "
         >
         Вместо меня должны быть элементы списка
@@ -195,10 +180,10 @@ export const codeEditButtons = [
     <td
       height="14"
       width="496"
-      style="border-collapse: collapse; background-color: #f9f7ff"
+      style="height: 14px; width: 496px; line-height: 20px; border-collapse: collapse; background-color: #f9f7ff"
     >
       <p style="
-          padding: 18px 16px;          
+          padding: 18px 16px;
           border-collapse: collapse;
           color: #0E0142;
           font-family: 'arial', 'helvetica', sans-serif, 'roboto';

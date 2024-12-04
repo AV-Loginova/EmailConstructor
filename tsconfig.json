@@ -20,6 +20,18 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "deprecated/templateEn.ts",
+    "deprecated/templateEnLastVerFooter.ts",
+    "deprecated/templateEnWithFooter.ts",
+    "deprecated/templateEnWithNewFooterV2.ts",
+    "deprecated/templateEnWithNoFooter.ts",
+    "deprecated/templateEsWithNoFooter.ts",
+    "deprecated/templateEnWithLegalInfoOnly.ts",
+    "deprecated/templateNewFooter.ts",
+    "deprecated/templatePtWithNoFooter.ts",
+    "deprecated/templateWithHtml.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -4,7 +4,7 @@ import EditSection from '../EditSection/EditSection';
 import { Link } from 'react-router-dom';
 import { templates } from '../data/templates';
 import Select from '../components/Select';
-import { HTMLtemplateEnWithFooter } from '../data/templateEnWithFooter';
+import { HTMLtemplateEnWithFooter } from '../../deprecated/templateEnWithFooter';
 
 const MainPage: React.FC = () => {
   const initialHistory = localStorage.getItem('mail');
