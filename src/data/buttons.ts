@@ -116,7 +116,7 @@ export const codeEditButtons = [
   {
     id: 6,
     name: 'Ссылка',
-    lines: 14,
+    lines: 16,
     variant: 'default',
     html: ` <a rel="noopener noreferrer"
       href=""
@@ -128,6 +128,7 @@ export const codeEditButtons = [
         line-height: 20px;
         margin: 0;
         padding: 0;
+        word-break: break-word;
       "
       target="_blank"
       rel="noopener noreferrer"
@@ -196,6 +197,68 @@ export const codeEditButtons = [
       </p>
     </td>
   </tr>
+  `,
+  },
+  {
+    id: 10,
+    name: 'Подпись',
+    lines: 19,
+    variant: 'neutral',
+    html: ` <tr width="496" style="width: 496px">
+  <td style="border-collapse: collapse">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="496" style="
+        border-collapse: collapse;
+        margin: 0;
+        font-family: 'arial', 'helvetica',
+          sans-serif, 'roboto';
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 20px;
+        color: #0e0142;
+      ">
+      <tbody><tr style="line-height: 20px">
+        <td style="
+            font-size: 20px;
+            font-weight: 700;
+          ">{{profile.name}}</td>
+      </tr>
+      <tr style="line-height: 20px">
+        <td style="
+            color: #0e014299;
+            font-size: 14px;
+            opacity: 0.6;
+          ">Sales representative | Kommo Sales
+          Team</td>
+      </tr>
+      <tr>
+        <td height="15" style="border-collapse: collapse" width="496"></td>
+      </tr>
+      <tr height="41" style="height: 41px">
+        <td width="" align="left"  style="border-radius: 26px">
+          <a href="{{profile.phone}}?utm_source=dp&amp;utm_campaign=comm&amp;utm_medium=email" rel="noopener noreferrer" target="_blank" style="
+              height: 40px;
+              width: 200px;
+              padding: 0 65px;
+              background-color: #0e0142;
+              border-color: #0e0142;
+              border-radius: 26px;
+              border-style: solid;
+              border-width: 12px 32px !important;
+              color: #ffffff !important;
+              font-family: 'arial', 'helvetica',
+                sans-serif, 'roboto';
+              font-size: 16px;
+              font-weight: 700;
+              text-decoration: none;
+            ">
+            Get a spot
+          </a>
+        </td>
+        <td width="520" style="width: 520px"></td>
+      </tr>
+    </tbody></table>
+  </td>
+</tr>
   `,
   },
 ];

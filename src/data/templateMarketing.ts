@@ -98,7 +98,7 @@ export const templateMarketing = `
                                         font-size: 24px;
                                         font-weight: 700;
                                         line-height: 28px;
-                                        color: #000000;
+                                        color: #0E0142;
                                         margin-top: 0;
                                         margin-bottom: 0;
                                         margin-right: 0;
@@ -116,7 +116,7 @@ export const templateMarketing = `
                                           font-family: Arial, Helvetica,
                                             sans-serif, 'Roboto';
                                           font-size: 24px;
-                                          color: #000000;
+                                          color: #0E0142;
                                           text-decoration: none;
                                           pointer-events: none;
                                         "

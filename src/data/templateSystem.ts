@@ -94,7 +94,7 @@ export const templateSystem = `
                                     <img
                                       alt="KommoLogo"
                                       height="48"
-                                      src="https://resize.yandex.net/mailservice?url=https%3A%2F%2Fwww.kommo.com%2Fimages%2Fnewsletters%2Fheader%2Ficon.png&amp;proxy=yes&amp;key=8ccdd4bbb9a9e9e2c9666e39646ebdb7"
+                                      src="https://www.kommo.com/images/newsletters/header/icon.png"
                                       width="48"
                                       style="display: block; margin-right: auto"
                                     />
@@ -157,7 +157,7 @@ export const templateSystem = `
                                         font-size: 24px;
                                         font-weight: 700;
                                         line-height: 28px;
-                                        color: #000000;
+                                        color: #0E0142;
                                         margin-top: 0;
                                         margin-bottom: 0;
                                         margin-right: 0;
@@ -175,7 +175,7 @@ export const templateSystem = `
                                           font-family: Arial, Helvetica,
                                             sans-serif, 'Roboto';
                                           font-size: 24px;
-                                          color: #000000;
+                                          color: #0E0142;
                                           text-decoration: none;
                                           pointer-events: none;
                                         "
