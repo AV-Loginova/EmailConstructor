@@ -1,4 +1,5 @@
 import { templateMarketing } from './templateMarketing';
+import { templateSales } from './templateSales';
 import { templateSystem } from './templateSystem';
 
 export interface Template {
@@ -20,5 +21,11 @@ export const templates: Template[] = [
     name: 'system',
     title: 'System template',
     value: templateSystem,
+  },
+  {
+    id: 3,
+    name: 'sales',
+    title: 'Sales template',
+    value: templateSales,
   },
 ];

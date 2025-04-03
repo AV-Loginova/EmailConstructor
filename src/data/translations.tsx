@@ -17,7 +17,7 @@ export const translationsMap: TranslationMap = {
     ES: 'Iniciar sesión',
     PT: 'Login',
     TR: 'Giriş yap',
-    HI: 'log in karo',
+    HI: 'Log in karo',
     ID: 'Masuk',
   },
   'Hi': {
@@ -67,6 +67,22 @@ export const translationsMap: TranslationMap = {
     TR: 'Bir Kommo hesabına kaydolduğunuz için bu mektubu aldınız',
     HI: 'Aapko yah email isliye mila hai kyuki aapne Kommo khate ke liye sign up kiya hai',
     ID: 'Kamu menerima email ini karena kamu mendaftar akun Kommo',
+  },
+  'Sales manager': {
+    EN: 'Sales manager',
+    ES: 'Representante de ventas',
+    PT: 'Representante de vendas',
+    TR: 'Satış temsilcisi',
+    HI: 'Bikri karmachari',
+    ID: 'Sales Representative',
+  },
+  'Kommo team': {
+    EN: 'Kommo team',
+    ES: 'Equipo de Kommo',
+    PT: 'Equipe de Kommo',
+    TR: 'Kommo ekibi',
+    HI: 'Kommo team',
+    ID: 'Tim Kommo',
   },
   'https://www.linkedin.com/company/kommo/': {
     EN: 'https://www.linkedin.com/company/kommo/',
