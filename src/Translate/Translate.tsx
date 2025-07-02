@@ -9,7 +9,7 @@ interface Translation {
   translation: string;
 }
 
-type Language = 'EN' | 'ES' | 'PT' | 'TR' | 'HI' | 'ID';
+type Language = 'EN' | 'ES' | 'PT' | 'TR' | 'HI' | 'ID' | 'RU';
 
 interface TranslationsByLanguage {
   [key: string]: Translation[];
