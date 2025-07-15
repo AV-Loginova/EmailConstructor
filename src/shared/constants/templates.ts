@@ -1,6 +1,6 @@
-import { templateMarketing } from './templateMarketing';
-import { templateSales } from './templateSales';
-import { templateSystem } from './templateSystem';
+import { templateMarketing } from '../templates/templateMarketing';
+import { templateSales } from '../templates/templateSales';
+import { templateSystem } from '../templates/templateSystem';
 
 export interface Template {
   id: number;

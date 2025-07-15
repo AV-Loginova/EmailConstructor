@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
 import JSZip from 'jszip';
 
-import { translationsMap } from '../data/translations';
+import { translationsMap } from '../../shared/constants/translations';
 
 interface Translation {
   original: string;
@@ -16,7 +16,7 @@ interface TranslationsByLanguage {
   [key: string]: Translation[];
 }
 
-const Translate = () => {
+const TranslationPage = () => {
   const [csvData, setCsvData] = useState<string[][]>([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,4 +170,4 @@ const Translate = () => {
   );
 };
 
-export default Translate;
+export default TranslationPage;

@@ -1,10 +1,14 @@
-import { RootState } from './store/store';
 import { Route, Routes } from 'react-router-dom';
-import Translate from './Translate/Translate';
-import MainPage from './main/MainPage';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { RootState } from './store/store';
 import { toggleTheme } from './store/themeSlice';
-import Toggle from './components/Toggle';
+
+import TranslationPage from './pages/TranslationPage/TranslationPage';
+import DragAndDropPage from './pages/DragAndDropPage/DragAndDropPage';
+import MainPage from './pages/MainPage/MainPage';
+
+import Toggle from './ui/Toggle';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -17,7 +21,8 @@ const App = () => {
     <div data-theme={`${theme === 'dark' ? 'dark' : 'light'}`}>
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/translate" element={<Translate />} />
+        <Route path="/translate" element={<TranslationPage />} />
+        <Route path="/dndtest" element={<DragAndDropPage />} />
       </Routes>
       <section className="absolute bottom-1 left-3">
         <Toggle

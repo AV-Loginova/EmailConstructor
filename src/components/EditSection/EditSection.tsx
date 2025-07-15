@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { codeEditButtons } from '../data/buttons';
+import { codeEditButtons } from '../../shared/constants/buttons';
 
 interface EditSectionProps {
   setHTMLCode: (e: [string, number]) => void;
