@@ -6,7 +6,6 @@ import TrashIcon from '../assets/trash.svg';
 
 type ActionType = 'copy' | 'download' | 'undo' | 'clear' | 'none';
 
-//height 22
 export const codeEditButtons = [
   {
     id: 1,

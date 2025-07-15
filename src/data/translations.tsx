@@ -156,4 +156,13 @@ export const translationsMap: TranslationMap = {
     HI: 'https://www.kommo.com',
     RU: '',
   },
+  'Go to account': {
+    EN: 'Go to account',
+    ES: 'Ir a tu cuenta',
+    PT: 'Acessar conta',
+    ID: 'Buka akun',
+    TR: 'Hesaba git',
+    HI: '',
+    RU: '',
+  },
 };

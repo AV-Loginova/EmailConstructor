@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 
+import { templateManipulateButtons } from '../data/buttons';
+
+import IconButton from '../components/IconButton';
+
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/ayu-mirage.css';
 import 'codemirror/theme/darcula.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
-import { templateManipulateButtons } from '../data/buttons';
-import IconButton from '../components/IconButton';
 
 interface CodeFieldProps {
   HTMLTemplate: string;

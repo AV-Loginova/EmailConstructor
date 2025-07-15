@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
 import JSZip from 'jszip';
+
 import { translationsMap } from '../data/translations';
 
 interface Translation {
@@ -76,7 +77,6 @@ const Translate = () => {
 
         if (translatedHtml.includes(escapedOriginal)) {
           translatedHtml = translatedHtml.replace(escapedOriginal, text);
-          translatedHtml = translatedHtml.replace(/\*(.*?)\*/g, '<b>$1</b>');
         } else {
           console.log(`"${escapedOriginal}" not found in HTML.`);
         }
@@ -94,6 +94,8 @@ const Translate = () => {
           }
         }
       }
+
+      translatedHtml = translatedHtml.replace(/\*(.*?)\*/g, '<b>$1</b>');
 
       zip.file(`email_${language}.html`, translatedHtml);
     });
@@ -141,6 +143,7 @@ const Translate = () => {
           Создать ZIP с HTML файлами
         </button>
       </div>
+
       {csvData.length > 0 && (
         <div className="mt-3 overflow-y-scroll max-h-[75vh]">
           <table className="table">
