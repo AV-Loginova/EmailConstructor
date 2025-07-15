@@ -1,8 +1,8 @@
-import QuestionIcon from '../assets/question.svg';
-import DownloadIcon from '../assets/download.svg';
-import CopyIcon from '../assets/copy.svg';
-import UndoIcon from '../assets/undo.svg';
-import TrashIcon from '../assets/trash.svg';
+import QuestionIcon from '../../assets/question.svg';
+import DownloadIcon from '../../assets/download.svg';
+import CopyIcon from '../../assets/copy.svg';
+import UndoIcon from '../../assets/undo.svg';
+import TrashIcon from '../../assets/trash.svg';
 
 type ActionType = 'copy' | 'download' | 'undo' | 'clear' | 'none';
 
