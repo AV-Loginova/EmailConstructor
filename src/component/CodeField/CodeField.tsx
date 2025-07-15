@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 
-import { templateManipulateButtons } from '../../shared/constants/buttons';
+import { templateManipulateButtons } from '@shared/constants/buttons';
 
-import IconButton from '../../ui/IconButton';
+import IconButton from '@ui/IconButton';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/ayu-mirage.css';

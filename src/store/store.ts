@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import themeReducer, { ThemeState } from './themeSlice';
-import templateReducer from './templateSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
+import themeReducer, { ThemeState } from './themeSlice';
+import templateReducer from './templateSlice';
 
 export interface RootState {
   theme: ThemeState;

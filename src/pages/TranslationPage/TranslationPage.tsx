@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
 import JSZip from 'jszip';
 
-import { translationsMap } from '../../shared/constants/translations';
+import { translationsMap } from '@shared/constants/translations';
 
 interface Translation {
   original: string;

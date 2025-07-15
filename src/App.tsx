@@ -1,14 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RootState } from './store/store';
-import { toggleTheme } from './store/themeSlice';
+import { RootState } from '@store/store';
+import { toggleTheme } from '@store/themeSlice';
 
-import TranslationPage from './pages/TranslationPage/TranslationPage';
-import DragAndDropPage from './pages/DragAndDropPage/DragAndDropPage';
-import MainPage from './pages/MainPage/MainPage';
+import TranslationPage from '@pages/TranslationPage/TranslationPage';
+import DragAndDropPage from '@pages/DragAndDropPage/DragAndDropPage';
+import MainPage from '@pages/MainPage/MainPage';
 
-import Toggle from './ui/Toggle';
+import Toggle from '@ui/Toggle';
 
 const App = () => {
   const dispatch = useDispatch();

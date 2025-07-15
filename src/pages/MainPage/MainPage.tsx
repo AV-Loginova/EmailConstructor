@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import CodeField from '../../components/CodeField/CodeField';
-import EditSection from '../../components/EditSection/EditSection';
+import CodeField from '@component/CodeField/CodeField';
+import EditSection from '@component/EditSection/EditSection';
 
-import { templates } from '../../shared/constants/templates';
+import { templates } from '@shared/constants/templates';
 
-import Select from '../../ui/Select';
+import Select from '@ui/Select';
 
 import { HTMLtemplateEnWithFooter } from '../../../deprecated/templateEnWithFooter';
 
