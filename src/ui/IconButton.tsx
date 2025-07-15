@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface IconButtonProps {
   clickAction: () => void;
   imageSource: string;
@@ -17,7 +15,7 @@ const IconButton = ({
     <button
       title={title}
       onClick={clickAction}
-      className={`h-30px  z-50 
+      className={`h-30px  z-50
          text-[#7ca2b2] rounded-md rounded-b-none`}
     >
       <img src={imageSource} width="20" alt={alt} className="text-[#7ca2b2]" />

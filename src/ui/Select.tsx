@@ -1,4 +1,4 @@
-import { Template } from '../shared/constants/templates';
+import { Template } from '@shared/constants/templates';
 
 interface SelectProps {
   onChange: (value: string) => void;
