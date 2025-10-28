@@ -89,8 +89,13 @@ export const templateSales = `<html xmlns="http://www.w3.org/1999/xhtml">
               <td>
                 <a target="_blank" rel="noopener noreferrer" href="https://www.kommo.com">
                 <img
-                  style="height: 180px"
-                  src="https://www.kommo.com/static/images/newsletters/legal_info/mail_signature.png"
+                  style="height: 180px;
+                      min-height: 180px;
+                      max-height: 180px;
+                      width: 282px;
+                      max-width: 282px;
+                      min-width: 282px;"
+                  src="https://www.kommo.com/static/images/newsletters/legal_info/mail_signature_no_back.png"
                   alt="signature"
                 />
                 </a>
