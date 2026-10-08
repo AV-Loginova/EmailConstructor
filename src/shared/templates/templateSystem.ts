@@ -26,8 +26,9 @@ export const templateSystem = `
       style="
         margin: 0;
         padding: 0;
-        width: 100%;
+        width: 100% !important;
         max-width: 100%;
+        min-width: 600px;
         background-color: #f5f5f5;
       "
     >
@@ -530,7 +531,7 @@ export const templateSystem = `
                         >
                           <tbody>
                             <tr height="19">
-                              <td style="height: 19px; line-height: 19px">©2025 QSOFT. All rights reserved.</td>
+                              <td style="height: 19px; line-height: 19px">©2026 QSOFT. All rights reserved.</td>
                             </tr>
                             <tr height="24">
                               <td style="height: 24px; line-height: 24px">222 Columbus Ave Suite 407, San Francisco, CA 94133-4589</td>
@@ -598,12 +599,6 @@ export const templateSystem = `
                                         style="height: 48px; width: 24px"
                                       ></td>
                                       <td style="height: 48px">
-                                        <a
-                                          rel="noopener noreferrer"
-                                          target="_blank"
-                                          style="text-decoration: none"
-                                          href="https://www.facebook.com/business/partner-directory/search?solution_type=messaging&amp;id=4488493901278076&amp;section=overview"
-                                        >
                                           <img
                                             style="
                                               height: 48px;
@@ -613,7 +608,6 @@ export const templateSystem = `
                                             src="https://www.kommo.com/static/images/newsletters/legal_info/meta_partner_badge_light_border_legal_info_block.png"
                                             alt="Meta"
                                           />
-                                        </a>
                                       </td>
                                       <td
                                         style="height: 48px; width: 129px"
