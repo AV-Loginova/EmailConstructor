@@ -1,14 +1,18 @@
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { EMAIL_WIDTH } from '@shared/snippets/styles';
-import { insertBody, SkeletonName } from '@shared/templates/skeleton';
+import {
+  bodyWidth,
+  insertBody,
+  SkeletonName,
+} from '@shared/templates/skeleton';
 
 import { editorStyles } from '../editorStyles';
 
 const SLOT_ATTR = 'data-builder-slot';
 
-const slotRow = `<tr><td ${SLOT_ATTR} width="${EMAIL_WIDTH}" style="width: ${EMAIL_WIDTH}px"></td></tr>`;
+const slotRow = (width: number) =>
+  `<tr><td ${SLOT_ATTR} width="${width}" style="width: ${width}px"></td></tr>`;
 
 interface SkeletonCanvasProps {
   skeleton: SkeletonName;
@@ -24,12 +28,12 @@ const SkeletonCanvas = ({ skeleton, children }: SkeletonCanvasProps) => {
     const host = hostRef.current;
     if (!host) return;
     const root = host.shadowRoot ?? host.attachShadow({ mode: 'open' });
-    root.innerHTML = `<style>${editorStyles}</style>${insertBody(skeleton, slotRow)}`;
+    root.innerHTML = `<style>${editorStyles}</style>${insertBody(skeleton, slotRow(bodyWidth(skeleton)))}`;
     setSlot(root.querySelector<HTMLElement>(`[${SLOT_ATTR}]`));
   }, [skeleton]);
 
   return (
-    <div ref={hostRef} className="w-fit">
+    <div ref={hostRef} className="w-fit" data-skeleton={skeleton}>
       {slot && createPortal(children, slot)}
     </div>
   );

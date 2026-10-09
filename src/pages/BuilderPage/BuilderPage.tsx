@@ -1,8 +1,11 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { createDocument, Editor } from '@tiptap/core';
+import { EditorState } from '@tiptap/pm/state';
 import { EditorContent, useEditor } from '@tiptap/react';
 
-import { compile } from '@shared/builder/compile';
+import { compile, DocNode } from '@shared/builder/compile';
+import { loadDraft, saveDraft } from '@shared/builder/draft';
 import { SkeletonName } from '@shared/templates/skeleton';
 
 import FormattingToolbar from './components/FormattingToolbar';
@@ -13,13 +16,30 @@ import { builderExtensions } from './extensions';
 import { useLinkEditor } from './useLinkEditor';
 
 const SKELETONS: { name: SkeletonName; title: string }[] = [
-  { name: 'marketing', title: 'Marketing' },
+  // { name: 'marketing', title: 'Marketing' },
   { name: 'system', title: 'System' },
   { name: 'sales', title: 'Sales' },
 ];
 
+// A fresh state drops undo history, so undo can't pull text over from another skeleton.
+const replaceDoc = (editor: Editor, doc: DocNode | undefined) => {
+  editor.view.updateState(
+    EditorState.create({
+      doc: createDocument(doc ?? '', editor.schema),
+      plugins: editor.state.plugins,
+    })
+  );
+};
+
 const BuilderPage = () => {
-  const [skeleton, setSkeleton] = useState<SkeletonName>('marketing');
+  const [initialDraft] = useState(loadDraft);
+  const [skeleton, setSkeleton] = useState(() =>
+    SKELETONS.some(({ name }) => name === initialDraft.skeleton)
+      ? initialDraft.skeleton
+      : SKELETONS[0].name
+  );
+  const [table, setTable] = useState(initialDraft.table);
+  const docsRef = useRef(initialDraft.docs);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
 
   // Extensions are created once, so the ⌘K handler reaches the latest link editor via a ref.
@@ -27,13 +47,45 @@ const BuilderPage = () => {
   const editLinkRef = useRef(() => {});
   const editor = useEditor({
     extensions: builderExtensions(() => editLinkRef.current()),
+    content: docsRef.current[skeleton],
   });
   const link = useLinkEditor(editor);
   editLinkRef.current = link.start;
 
+  // Saved synchronously on every change: the draft is small and a reload must not lose the last keystroke.
+  useEffect(() => {
+    if (!editor) return;
+    const save = () => {
+      docsRef.current = { ...docsRef.current, [skeleton]: editor.getJSON() };
+      saveDraft({ skeleton, table, docs: docsRef.current });
+    };
+    save();
+    editor.on('update', save);
+    return () => {
+      editor.off('update', save);
+    };
+  }, [editor, skeleton, table]);
+
+  const switchSkeleton = (next: SkeletonName) => {
+    if (editor) replaceDoc(editor, docsRef.current[next]);
+    setSkeleton(next);
+  };
+
   const openPreview = () => {
     if (!editor) return;
-    setPreviewHtml(compile(editor.getJSON(), skeleton, null).html.EN);
+    setPreviewHtml(compile(editor.getJSON(), skeleton, table).html.EN);
+  };
+
+  const clearDraft = () => {
+    if (!editor) return;
+    if (
+      !window.confirm(
+        'Очистить письмо? Текст и таблица переводов будут удалены, каркас останется.'
+      )
+    )
+      return;
+    setTable(null);
+    editor.commands.clearContent(true);
   };
 
   return (
@@ -46,7 +98,7 @@ const BuilderPage = () => {
           className="select select-bordered select-sm"
           aria-label="Каркас"
           value={skeleton}
-          onChange={(e) => setSkeleton(e.target.value as SkeletonName)}
+          onChange={(e) => switchSkeleton(e.target.value as SkeletonName)}
         >
           {SKELETONS.map(({ name, title }) => (
             <option key={name} value={name}>
@@ -54,10 +106,10 @@ const BuilderPage = () => {
             </option>
           ))}
         </select>
-        <button
-          className="btn btn-primary btn-sm ml-auto"
-          onClick={openPreview}
-        >
+        <button className="btn btn-ghost btn-sm ml-auto" onClick={clearDraft}>
+          Очистить
+        </button>
+        <button className="btn btn-primary btn-sm" onClick={openPreview}>
           Предпросмотр
         </button>
       </header>

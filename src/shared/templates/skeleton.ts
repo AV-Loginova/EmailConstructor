@@ -1,8 +1,16 @@
+import { EMAIL_WIDTH } from '@shared/snippets/styles';
+
 import { templateMarketing } from './templateMarketing';
 import { templateSales } from './templateSales';
 import { templateSystem } from './templateSystem';
 
 export type SkeletonName = 'marketing' | 'system' | 'sales';
+
+// Sales body spans the whole 600px letter, like the signature below it.
+export const SALES_BODY_WIDTH = 600;
+
+export const bodyWidth = (name: SkeletonName) =>
+  name === 'sales' ? SALES_BODY_WIDTH : EMAIL_WIDTH;
 
 // In sales the slot sits right before the manager signature.
 export const BODY_SLOT = '<!-- Тело письма -->';

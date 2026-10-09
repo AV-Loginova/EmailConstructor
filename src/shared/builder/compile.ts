@@ -7,7 +7,12 @@ import {
   renderNewLine,
   renderParagraph,
 } from '@shared/snippets/render';
-import { insertBody, SkeletonName } from '@shared/templates/skeleton';
+import { COLORS, FONT_FAMILY, SPACING, TEXT } from '@shared/snippets/styles';
+import {
+  insertBody,
+  SALES_BODY_WIDTH,
+  SkeletonName,
+} from '@shared/templates/skeleton';
 
 // Structurally compatible with TipTap JSONContent, so the module stays React-free.
 export interface DocNode {
@@ -35,41 +40,83 @@ export interface CompileResult {
 
 const SOURCE_LANGUAGE = 'EN';
 
+const escapeAttr = (value: string) => escapeText(value).replace(/"/g, '&quot;');
+
 const escapeText = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const findMark = (node: DocNode, type: string) =>
   node.marks?.find((mark) => mark.type === type);
 
+// Kommo needs the recipient name inside a link; like in the skeletons, it must still look like text.
+const isContactName = (node: DocNode) =>
+  node.type === 'variable' && node.attrs?.name === 'contact.name';
+
+const contactNameLink = (inner: string, color: string) =>
+  `<a href="#" target="_blank" rel="noopener noreferrer" style="color: ${color}; text-decoration: none">${inner}</a>`;
+
 const linkHref = (node: DocNode) => {
   const href = findMark(node, 'link')?.attrs?.href;
   return typeof href === 'string' ? href : null;
 };
 
+// Variables leave as typed: Kommo substitutes `{{…}}` in the final HTML.
+const inlineText = (node: DocNode) => {
+  if (node.type === 'text') return node.text ?? '';
+  if (node.type === 'variable') return `{{${String(node.attrs?.name ?? '')}}}`;
+  return '';
+};
+
 const renderText = (node: DocNode) => {
-  if (node.type !== 'text') return '';
-  const text = escapeText(node.text ?? '');
-  return findMark(node, 'bold') ? `<b>${text}</b>` : text;
+  const text = escapeText(inlineText(node));
+  return text && findMark(node, 'bold') ? `<b>${text}</b>` : text;
 };
 
 // The snippet pads <a> with whitespace, which would render as a space before punctuation.
 const tightLink = (html: string) => html.trim().replace(/\s+<\/a>$/, '</a>');
 
+const plainLink = (inner: string, href: string) =>
+  `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${inner}</a>`;
+
+const snippetLink = (inner: string, href: string) =>
+  tightLink(renderLink({ text: raw(inner), href }));
+
+interface InlineStyle {
+  link: (inner: string, href: string) => string;
+  textColor: string;
+}
+
+const SNIPPET_INLINE: InlineStyle = {
+  link: snippetLink,
+  textColor: COLORS.text,
+};
+const PLAIN_INLINE: InlineStyle = { link: plainLink, textColor: '#000000' };
+
 // Adjacent text nodes sharing an href form one <a>, even when bold splits them.
-const renderInline = (nodes: DocNode[] = []) => {
+const renderInline = (nodes: DocNode[] = [], style = SNIPPET_INLINE) => {
+  const { link } = style;
   let html = '';
   let i = 0;
   while (i < nodes.length) {
+    // Breaks out of a surrounding user link: nested <a> is invalid.
+    if (isContactName(nodes[i])) {
+      html += contactNameLink(renderText(nodes[i++]), style.textColor);
+      continue;
+    }
     const href = linkHref(nodes[i]);
     if (href === null) {
       html += renderText(nodes[i++]);
       continue;
     }
     let inner = '';
-    while (i < nodes.length && linkHref(nodes[i]) === href) {
+    while (
+      i < nodes.length &&
+      !isContactName(nodes[i]) &&
+      linkHref(nodes[i]) === href
+    ) {
       inner += renderText(nodes[i++]);
     }
-    html += tightLink(renderLink({ text: raw(inner), href }));
+    html += link(inner, href);
   }
   return html;
 };
@@ -105,8 +152,60 @@ const renderBlock = (node: DocNode) => {
   }
 };
 
-export const renderBody = (doc: DocNode) =>
-  (doc.content ?? []).map(renderBlock).join('');
+// Sales letters should read as typed by the manager: same table rows as the snippets, but plain black
+// text and default links. Each block is its own row so email clients keep the layout.
+const plainRow = (inner: string, height?: number) => `<tr>
+      <td
+        width="${SALES_BODY_WIDTH}"${height ? ` height="${height}"` : ''}
+        style="
+          margin: 0;
+          padding: 0;
+          width: ${SALES_BODY_WIDTH}px;
+          max-width: ${SALES_BODY_WIDTH}px;${height ? `\n          height: ${height}px;` : ''}
+          border-collapse: collapse;
+          color: ${PLAIN_INLINE.textColor};
+          font-family: ${FONT_FAMILY};
+          font-size: ${TEXT.fontSize}px;
+          font-weight: ${TEXT.fontWeight};
+          line-height: ${TEXT.lineHeight}px;
+          word-break: break-word;
+        "
+      >${inner}</td>
+    </tr>
+    `;
+
+const renderPlainBlock = (node: DocNode): string => {
+  switch (node.type) {
+    case 'paragraph':
+      return node.content?.length
+        ? plainRow(renderInline(node.content, PLAIN_INLINE))
+        : plainRow('', SPACING.newLineHeight);
+    case 'heading':
+      return plainRow(`<b>${renderInline(node.content, PLAIN_INLINE)}</b>`);
+    case 'bulletList': {
+      const style =
+        node.attrs?.listStyle === 'disc'
+          ? 'margin: 0; padding: 0 0 0 20px; list-style: disc'
+          : 'margin: 0; padding: 0; list-style: none';
+      const items = (node.content ?? [])
+        .map(
+          (item) =>
+            `<li>${(item.content ?? [])
+              .map((child) => renderInline(child.content, PLAIN_INLINE))
+              .join('<br />')}</li>`
+        )
+        .join('');
+      return plainRow(`<ul style="${style}">${items}</ul>`);
+    }
+    default:
+      return '';
+  }
+};
+
+export const renderBody = (doc: DocNode, skeleton: SkeletonName) =>
+  (doc.content ?? [])
+    .map(skeleton === 'sales' ? renderPlainBlock : renderBlock)
+    .join('');
 
 export const compile = (
   doc: DocNode,
@@ -114,7 +213,7 @@ export const compile = (
   // Translations are applied starting from ticket 07.
   _table: TranslationTable | null
 ): CompileResult => {
-  const html = insertBody(skeleton, renderBody(doc));
+  const html = insertBody(skeleton, renderBody(doc, skeleton));
   return {
     languages: [SOURCE_LANGUAGE],
     html: { [SOURCE_LANGUAGE]: html },
