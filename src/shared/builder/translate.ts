@@ -1,6 +1,11 @@
 import { translationsMap } from '@shared/constants/translations';
 
-import type { CompileReport, DocNode, TranslationTable } from './compile';
+import type {
+  CompileReport,
+  DocNode,
+  MissingReason,
+  TranslationTable,
+} from './compile';
 
 type Mark = NonNullable<DocNode['marks']>[number];
 
@@ -147,11 +152,11 @@ const createTranslator = (
     return parsed.rows.get(key) ?? null;
   };
 
-  const markMissing = ({ id, source }: Unit) => {
+  const markMissing = ({ id, source }: Unit, reason: MissingReason) => {
     if (id) untranslated.add(id);
     if (missing.has(source)) return;
     missing.add(source);
-    report.missing.push({ lang, source });
+    report.missing.push({ lang, source, reason });
   };
 
   const apply = (cell: string, source: string, hrefs: string[]) => {
@@ -166,9 +171,10 @@ const createTranslator = (
     inline: (nodes = [], id) => {
       const source = plainText(nodes).trim();
       if (!isTranslatable(source)) return null;
-      const cell = findRow(source)?.[column]?.trim();
+      const row = findRow(source);
+      const cell = row?.[column]?.trim();
       if (!cell) {
-        markMissing({ id, source });
+        markMissing({ id, source }, row ? 'emptyCell' : 'noRow');
         return null;
       }
       return apply(cell, source, linkHrefs(nodes));

@@ -28,8 +28,11 @@ export interface DocNode {
 
 export type TranslationTable = string[][];
 
+// `noRow` — the table has no such source text; `emptyCell` — the row exists, the language cell is blank.
+export type MissingReason = 'noRow' | 'emptyCell';
+
 export interface CompileReport {
-  missing: { lang: string; source: string }[];
+  missing: { lang: string; source: string; reason: MissingReason }[];
   linkMismatch: { lang: string; source: string }[];
   unusedRows: string[];
 }
@@ -42,6 +45,13 @@ export interface CompileResult {
 }
 
 const SOURCE_LANGUAGE = 'EN';
+
+export const isReportEmpty = ({
+  missing,
+  linkMismatch,
+  unusedRows,
+}: CompileReport) =>
+  !missing.length && !linkMismatch.length && !unusedRows.length;
 
 const escapeAttr = (value: string) => escapeText(value).replace(/"/g, '&quot;');
 

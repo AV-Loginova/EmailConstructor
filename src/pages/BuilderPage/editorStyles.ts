@@ -104,6 +104,10 @@ export const editorStyles = `
   .ProseMirror .variable-chip.ProseMirror-selectednode {
     box-shadow: 0 0 0 2px ${COLORS.link};
   }
+  .ProseMirror .is-untranslated {
+    background: #fff3c4;
+    box-shadow: 0 0 0 2px #fff3c4;
+  }
   .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;

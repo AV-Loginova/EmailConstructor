@@ -4,7 +4,12 @@ import { createDocument, Editor } from '@tiptap/core';
 import { EditorState } from '@tiptap/pm/state';
 import { EditorContent, useEditor } from '@tiptap/react';
 
-import { compile, CompileResult, DocNode } from '@shared/builder/compile';
+import {
+  compile,
+  CompileResult,
+  DocNode,
+  isReportEmpty,
+} from '@shared/builder/compile';
 import { loadDraft, saveDraft } from '@shared/builder/draft';
 import {
   buildCsv,
@@ -17,11 +22,13 @@ import { SkeletonName } from '@shared/templates/skeleton';
 
 import FormattingToolbar from './components/FormattingToolbar';
 import PreviewModal from './components/PreviewModal';
+import ReportModal from './components/ReportModal';
 import SelectionBubbleMenu from './components/SelectionBubbleMenu';
 import SkeletonCanvas from './components/SkeletonCanvas';
 import TranslationsControl from './components/TranslationsControl';
 import { builderExtensions } from './extensions';
 import { ensureNodeIds } from './nodeId';
+import { setUntranslatedIds } from './untranslatedHighlight';
 import { useLinkEditor } from './useLinkEditor';
 
 const SKELETONS: { name: SkeletonName; title: string }[] = [
@@ -43,6 +50,17 @@ const replaceDoc = (editor: Editor, doc: DocNode | undefined) => {
 
 const RECOMPILE_DELAY = 300;
 
+type Download = (result: CompileResult) => void | Promise<void>;
+
+const downloadZip: Download = async (result) =>
+  downloadBlob(await buildZip(result), ZIP_FILENAME);
+
+const downloadCsv: Download = (result) =>
+  downloadBlob(
+    new Blob([buildCsv(result)], { type: 'text/csv;charset=utf-8' }),
+    CSV_FILENAME
+  );
+
 const BuilderPage = () => {
   const [initialDraft] = useState(loadDraft);
   const [skeleton, setSkeleton] = useState(() =>
@@ -54,6 +72,10 @@ const BuilderPage = () => {
   const docsRef = useRef(initialDraft.docs);
   const [preview, setPreview] = useState<CompileResult | null>(null);
   const [result, setResult] = useState<CompileResult | null>(null);
+  const [pending, setPending] = useState<{
+    result: CompileResult;
+    download: Download;
+  } | null>(null);
 
   // Extensions are created once, so the ⌘K handler reaches the latest link editor via a ref.
   const pageRef = useRef<HTMLDivElement>(null);
@@ -97,6 +119,10 @@ const BuilderPage = () => {
     };
   }, [editor, skeleton, table]);
 
+  useEffect(() => {
+    if (editor) setUntranslatedIds(editor, result?.untranslatedNodeIds ?? []);
+  }, [editor, result]);
+
   const switchSkeleton = (next: SkeletonName) => {
     if (editor) replaceDoc(editor, docsRef.current[next]);
     setSkeleton(next);
@@ -109,18 +135,17 @@ const BuilderPage = () => {
     setPreview(compileDoc());
   };
 
-  const downloadZip = async () => {
-    const result = compileDoc();
-    if (result) downloadBlob(await buildZip(result), ZIP_FILENAME);
-  };
-
-  const downloadCsv = () => {
+  const requestDownload = (download: Download) => {
     const result = compileDoc();
     if (!result) return;
-    downloadBlob(
-      new Blob([buildCsv(result)], { type: 'text/csv;charset=utf-8' }),
-      CSV_FILENAME
-    );
+    if (isReportEmpty(result.report)) download(result);
+    else setPending({ result, download });
+  };
+
+  const confirmDownload = () => {
+    if (!pending) return;
+    pending.download(pending.result);
+    setPending(null);
   };
 
   const clearDraft = () => {
@@ -161,10 +186,16 @@ const BuilderPage = () => {
         <button className="btn btn-ghost btn-sm ml-auto" onClick={clearDraft}>
           Очистить
         </button>
-        <button className="btn btn-outline btn-sm" onClick={downloadZip}>
+        <button
+          className="btn btn-outline btn-sm"
+          onClick={() => requestDownload(downloadZip)}
+        >
           Скачать ZIP
         </button>
-        <button className="btn btn-outline btn-sm" onClick={downloadCsv}>
+        <button
+          className="btn btn-outline btn-sm"
+          onClick={() => requestDownload(downloadCsv)}
+        >
           Скачать CSV
         </button>
         <button className="btn btn-primary btn-sm" onClick={openPreview}>
@@ -193,6 +224,13 @@ const BuilderPage = () => {
       </div>
       {preview && (
         <PreviewModal result={preview} onClose={() => setPreview(null)} />
+      )}
+      {pending && (
+        <ReportModal
+          report={pending.result.report}
+          onConfirm={confirmDownload}
+          onCancel={() => setPending(null)}
+        />
       )}
     </div>
   );
