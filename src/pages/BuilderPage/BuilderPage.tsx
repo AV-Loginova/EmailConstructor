@@ -4,7 +4,7 @@ import { createDocument, Editor } from '@tiptap/core';
 import { EditorState } from '@tiptap/pm/state';
 import { EditorContent, useEditor } from '@tiptap/react';
 
-import { compile, DocNode } from '@shared/builder/compile';
+import { compile, CompileResult, DocNode } from '@shared/builder/compile';
 import { loadDraft, saveDraft } from '@shared/builder/draft';
 import {
   buildCsv,
@@ -19,7 +19,9 @@ import FormattingToolbar from './components/FormattingToolbar';
 import PreviewModal from './components/PreviewModal';
 import SelectionBubbleMenu from './components/SelectionBubbleMenu';
 import SkeletonCanvas from './components/SkeletonCanvas';
+import TranslationsControl from './components/TranslationsControl';
 import { builderExtensions } from './extensions';
+import { ensureNodeIds } from './nodeId';
 import { useLinkEditor } from './useLinkEditor';
 
 const SKELETONS: { name: SkeletonName; title: string }[] = [
@@ -36,7 +38,10 @@ const replaceDoc = (editor: Editor, doc: DocNode | undefined) => {
       plugins: editor.state.plugins,
     })
   );
+  ensureNodeIds(editor);
 };
+
+const RECOMPILE_DELAY = 300;
 
 const BuilderPage = () => {
   const [initialDraft] = useState(loadDraft);
@@ -47,7 +52,8 @@ const BuilderPage = () => {
   );
   const [table, setTable] = useState(initialDraft.table);
   const docsRef = useRef(initialDraft.docs);
-  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [preview, setPreview] = useState<CompileResult | null>(null);
+  const [result, setResult] = useState<CompileResult | null>(null);
 
   // Extensions are created once, so the ⌘K handler reaches the latest link editor via a ref.
   const pageRef = useRef<HTMLDivElement>(null);
@@ -73,6 +79,24 @@ const BuilderPage = () => {
     };
   }, [editor, skeleton, table]);
 
+  // Keeps the translation status current while typing, without compiling on every keystroke.
+  useEffect(() => {
+    if (!editor) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const recompile = () =>
+      setResult(compile(editor.getJSON(), skeleton, table));
+    const schedule = () => {
+      clearTimeout(timer);
+      timer = setTimeout(recompile, RECOMPILE_DELAY);
+    };
+    recompile();
+    editor.on('update', schedule);
+    return () => {
+      clearTimeout(timer);
+      editor.off('update', schedule);
+    };
+  }, [editor, skeleton, table]);
+
   const switchSkeleton = (next: SkeletonName) => {
     if (editor) replaceDoc(editor, docsRef.current[next]);
     setSkeleton(next);
@@ -82,8 +106,7 @@ const BuilderPage = () => {
     editor ? compile(editor.getJSON(), skeleton, table) : null;
 
   const openPreview = () => {
-    const result = compileDoc();
-    if (result) setPreviewHtml(result.html.EN);
+    setPreview(compileDoc());
   };
 
   const downloadZip = async () => {
@@ -114,7 +137,7 @@ const BuilderPage = () => {
 
   return (
     <div ref={pageRef} className="w-[100vw] h-[100vh] flex flex-col">
-      <header className="flex items-center gap-2 p-2 border-b border-base-300">
+      <header className="flex flex-wrap items-center gap-2 p-2 border-b border-base-300">
         <Link className="btn btn-ghost btn-sm" to="/">
           ← Редактор
         </Link>
@@ -130,6 +153,11 @@ const BuilderPage = () => {
             </option>
           ))}
         </select>
+        <TranslationsControl
+          table={table}
+          result={result}
+          onChange={setTable}
+        />
         <button className="btn btn-ghost btn-sm ml-auto" onClick={clearDraft}>
           Очистить
         </button>
@@ -163,8 +191,8 @@ const BuilderPage = () => {
           )}
         </main>
       </div>
-      {previewHtml !== null && (
-        <PreviewModal html={previewHtml} onClose={() => setPreviewHtml(null)} />
+      {preview && (
+        <PreviewModal result={preview} onClose={() => setPreview(null)} />
       )}
     </div>
   );

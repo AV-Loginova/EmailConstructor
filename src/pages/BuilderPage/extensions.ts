@@ -12,6 +12,7 @@ import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { Placeholder, UndoRedo } from '@tiptap/extensions';
 
+import { NodeId } from './nodeId';
 import { Variable } from './variable';
 
 // The snippet's list has no markers; «disc» is the opt-in bulleted variant.
@@ -55,6 +56,7 @@ export const builderExtensions = (onEditLink: () => void) => [
   StyledBulletList,
   FlatListItem,
   Variable,
+  NodeId,
   Bold,
   Link.configure({
     openOnClick: false,

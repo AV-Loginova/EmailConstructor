@@ -12,7 +12,10 @@ import {
   insertBody,
   SALES_BODY_WIDTH,
   SkeletonName,
+  splitSkeleton,
 } from '@shared/templates/skeleton';
+
+import { translateDoc, translateSkeletonPart } from './translate';
 
 // Structurally compatible with TipTap JSONContent, so the module stays React-free.
 export interface DocNode {
@@ -210,14 +213,33 @@ export const renderBody = (doc: DocNode, skeleton: SkeletonName) =>
 export const compile = (
   doc: DocNode,
   skeleton: SkeletonName,
-  // Translations are applied starting from ticket 07.
-  _table: TranslationTable | null
+  table: TranslationTable | null
 ): CompileResult => {
-  const html = insertBody(skeleton, renderBody(doc, skeleton));
+  const translation = table ? translateDoc(doc, table) : null;
+  if (!translation?.languages.length) {
+    return {
+      languages: [SOURCE_LANGUAGE],
+      html: {
+        [SOURCE_LANGUAGE]: insertBody(skeleton, renderBody(doc, skeleton)),
+      },
+      report: { missing: [], linkMismatch: [], unusedRows: [] },
+      untranslatedNodeIds: [],
+    };
+  }
+  // The dictionary touches only the skeleton, never the manager's text.
+  const { head, tail } = splitSkeleton(skeleton);
+  const html = Object.fromEntries(
+    translation.languages.map((lang) => [
+      lang,
+      translateSkeletonPart(head, lang) +
+        renderBody(translation.docs[lang], skeleton) +
+        translateSkeletonPart(tail, lang),
+    ])
+  );
   return {
-    languages: [SOURCE_LANGUAGE],
-    html: { [SOURCE_LANGUAGE]: html },
-    report: { missing: [], linkMismatch: [], unusedRows: [] },
-    untranslatedNodeIds: [],
+    languages: translation.languages,
+    html,
+    report: translation.report,
+    untranslatedNodeIds: translation.untranslatedNodeIds,
   };
 };
