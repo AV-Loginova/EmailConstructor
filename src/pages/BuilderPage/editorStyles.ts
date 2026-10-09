@@ -110,6 +110,14 @@ export const editorStyles = `
     background: #fff3c4;
     box-shadow: 0 0 0 2px #fff3c4;
   }
+  /* Block content covers the background, so blocks get a ring instead. */
+  .ProseMirror .react-renderer.is-untranslated {
+    background: none;
+    box-shadow: none;
+    outline: 2px solid #f5c842;
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
   .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;

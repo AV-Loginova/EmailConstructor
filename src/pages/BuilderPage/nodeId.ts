@@ -1,7 +1,8 @@
 import { Editor, Extension } from '@tiptap/core';
 import { EditorState, Plugin, PluginKey } from '@tiptap/pm/state';
 
-const TYPES = ['paragraph', 'heading'];
+// Blocks with translatable attrs get ids too, so the highlight can find them.
+const TYPES = ['paragraph', 'heading', 'button', 'image'];
 
 const newId = () => Math.random().toString(36).slice(2, 10);
 

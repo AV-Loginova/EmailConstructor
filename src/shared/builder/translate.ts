@@ -6,6 +6,7 @@ import type {
   MissingReason,
   TranslationTable,
 } from './compile';
+import { isSafeHref } from './href';
 
 type Mark = NonNullable<DocNode['marks']>[number];
 
@@ -15,8 +16,9 @@ export interface ParsedTable {
   rows: Map<string, string[]>;
 }
 
-// Translators may keep the `*bold*` / `[link]` markers in the source column too.
-const stripMarkers = (text: string) => text.replace(/[*[\]]/g, '');
+// Translators may keep the `*bold*` / `[link](url)` markers in the source column too.
+const stripMarkers = (text: string) =>
+  text.replace(/\]\([^)]*\)/g, ']').replace(/[*[\]]/g, '');
 
 export const parseTable = (table: TranslationTable): ParsedTable => {
   const [header = [], ...body] = table.filter((row) =>
@@ -63,14 +65,25 @@ const linkHrefs = (nodes: DocNode[]) => {
   return hrefs;
 };
 
-const countLinks = (cell: string) => cell.match(/\[[^\]]*\]/g)?.length ?? 0;
+// `[x](url)`: the URL is the translator's own, so a language can link to its localized page.
+const LINK = /\[([^\]]*)\](?:\(([^)]*)\))?/g;
 
-// `*x*` → bold, `[x]` → the N-th original href; unmatched markers stay literal.
+// A bracket without its own URL needs an original href; with all URLs given, the count may differ.
+const hasLinkMismatch = (cell: string, hrefs: string[]) => {
+  const links = [...cell.matchAll(LINK)];
+  return (
+    links.length !== hrefs.length && links.some(([, , url]) => !url?.trim())
+  );
+};
+
+// `*x*` → bold, `[x]` → the N-th original href, `[x](url)` → url; unmatched markers stay literal.
 const parseCell = (cell: string, hrefs: string[]): DocNode[] => {
   const nodes: DocNode[] = [];
   let bold = false;
   let link: string | null | undefined;
   let linkIndex = 0;
+  // Where the `(url)` after the current link's `]` ends.
+  let linkEnd = -1;
   let buffer = '';
 
   const flush = () => {
@@ -104,11 +117,17 @@ const parseCell = (cell: string, hrefs: string[]): DocNode[] => {
       bold = !bold;
     } else if (char === '[' && link === undefined && rest.includes(']')) {
       flush();
-      // Without a matching href the text stays plain: no link without a target.
-      link = hrefs[linkIndex++] ?? null;
+      const close = cell.indexOf(']', i);
+      const urlEnd = cell[close + 1] === '(' ? cell.indexOf(')', close) : -1;
+      const url = urlEnd > -1 ? cell.slice(close + 2, urlEnd).trim() : '';
+      linkEnd = urlEnd;
+      // Without a target the text stays plain: no link to nowhere.
+      const original = hrefs[linkIndex++] ?? null;
+      link = url && isSafeHref(url) ? url : original;
     } else if (char === ']' && link !== undefined) {
       flush();
       link = undefined;
+      if (linkEnd > -1) i = linkEnd;
     } else {
       buffer += char;
     }
@@ -125,6 +144,11 @@ interface Unit {
 interface Translator {
   // Returns translated inline content, or null when the source text should stay.
   inline: (nodes: DocNode[] | undefined, id: string | null) => DocNode[] | null;
+  // Plain-text block field (button label, alt): markers dropped, no links.
+  attr: (
+    source: string,
+    id: string | null
+  ) => { text: string; href: string | null } | null;
   // Whole multi-paragraph field; null when there is no row for it.
   field: (paragraphs: DocNode[]) => DocNode[] | null;
 }
@@ -160,24 +184,36 @@ const createTranslator = (
   };
 
   const apply = (cell: string, source: string, hrefs: string[]) => {
-    if (countLinks(cell) !== hrefs.length && !mismatched.has(source)) {
+    if (hasLinkMismatch(cell, hrefs) && !mismatched.has(source)) {
       mismatched.add(source);
       report.linkMismatch.push({ lang, source });
     }
     return parseCell(cell, hrefs);
   };
 
+  const lookup = (unit: Unit) => {
+    if (!isTranslatable(unit.source)) return null;
+    const row = findRow(unit.source);
+    const cell = row?.[column]?.trim();
+    if (!cell) {
+      markMissing(unit, row ? 'emptyCell' : 'noRow');
+      return null;
+    }
+    return cell;
+  };
+
   return {
     inline: (nodes = [], id) => {
       const source = plainText(nodes).trim();
-      if (!isTranslatable(source)) return null;
-      const row = findRow(source);
-      const cell = row?.[column]?.trim();
-      if (!cell) {
-        markMissing({ id, source }, row ? 'emptyCell' : 'noRow');
-        return null;
-      }
-      return apply(cell, source, linkHrefs(nodes));
+      const cell = lookup({ id, source });
+      return cell === null ? null : apply(cell, source, linkHrefs(nodes));
+    },
+    attr: (value, id) => {
+      const cell = lookup({ id, source: value.trim() });
+      if (cell === null) return null;
+      const nodes = parseCell(cell, []);
+      const href = nodes.map(hrefOf).find((url) => url !== null) ?? null;
+      return { text: plainText(nodes), href };
     },
     field: (paragraphs) => {
       const source = paragraphs
@@ -236,6 +272,26 @@ const translateListItem = (item: DocNode, t: Translator): DocNode => {
   };
 };
 
+// Block text the reader sees; `href` takes the URL of a `[text](url)` cell. `src` is never translated.
+const TEXT_ATTRS: Record<string, { text: string; href?: string }> = {
+  button: { text: 'text', href: 'href' },
+  image: { text: 'alt', href: 'href' },
+};
+
+const translateAttr = (
+  node: DocNode,
+  fields: { text: string; href?: string },
+  t: Translator
+) => {
+  const value = node.attrs?.[fields.text];
+  const translated =
+    typeof value === 'string' ? t.attr(value, nodeId(node)) : null;
+  if (!translated) return node;
+  const attrs = { ...node.attrs, [fields.text]: translated.text };
+  if (fields.href && translated.href) attrs[fields.href] = translated.href;
+  return { ...node, attrs };
+};
+
 const translateBlock = (node: DocNode, t: Translator): DocNode => {
   switch (node.type) {
     case 'paragraph':
@@ -247,12 +303,15 @@ const translateBlock = (node: DocNode, t: Translator): DocNode => {
         content: (node.content ?? []).map((item) => translateListItem(item, t)),
       };
     case 'background':
+    case 'buttonRow':
       return {
         ...node,
         content: (node.content ?? []).map((child) => translateBlock(child, t)),
       };
     default:
-      return node;
+      return node.type in TEXT_ATTRS
+        ? translateAttr(node, TEXT_ATTRS[node.type], t)
+        : node;
   }
 };
 

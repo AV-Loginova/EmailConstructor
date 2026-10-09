@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
 
 import { CompileResult, TranslationTable } from '@shared/builder/compile';
@@ -47,6 +48,17 @@ const TranslationsControl = ({
       >
         {table ? 'Заменить переводы' : 'Загрузить переводы'}
       </button>
+      {/* New tab: the help page must not pull the manager out of the letter. */}
+      <div className="tooltip tooltip-bottom" data-tip="Как составить таблицу">
+        <Link
+          to="/builder/translations-help"
+          target="_blank"
+          className="btn btn-ghost btn-xs btn-circle"
+          aria-label="Как составить таблицу переводов"
+        >
+          ?
+        </Link>
+      </div>
       {table && result && (
         <>
           <span className="text-sm whitespace-nowrap">

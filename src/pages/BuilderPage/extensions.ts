@@ -12,6 +12,8 @@ import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { Gapcursor, Placeholder, UndoRedo } from '@tiptap/extensions';
 
+import { isSafeHref } from '@shared/builder/href';
+
 import { PALETTE_BLOCKS } from './blocks';
 import { DropIndicator } from './blocks/dropIndicator';
 import { NodeId } from './nodeId';
@@ -46,10 +48,6 @@ const StyledBulletList = BulletList.extend({
 
 // No nested lists: email list items hold paragraphs only.
 const FlatListItem = ListItem.extend({ content: 'paragraph+' });
-
-// Hrefs often carry Kommo variables ({{profile.phone}}?utm…), so only script URLs are rejected.
-const isSafeHref = (href: string) =>
-  !/^\s*(javascript|vbscript|data):/i.test(href);
 
 export const builderExtensions = (onEditLink: () => void) => [
   Document,
