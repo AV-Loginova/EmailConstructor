@@ -34,6 +34,7 @@ export const templateSales = `<html xmlns="http://www.w3.org/1999/xhtml">
           </p>
         </td>
       </tr>
+      <!-- Тело письма -->
       <tr>
         <td>
           <table

@@ -192,7 +192,7 @@ export const templateSystem = `
                                       style="border-collapse: collapse"
                                     ></td>
                                   </tr>
-                                   <!--Тело тут -->
+                                   <!-- Тело письма -->
                                   <tr>
                                     <td
                                       height="14"
