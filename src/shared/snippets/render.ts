@@ -143,15 +143,18 @@ export const renderLink = ({
     </a>
   `;
 
+export type ListStyle = 'none' | 'disc';
+
 export const renderList = ({
   items = 'Вместо меня должны быть элементы списка',
-}: { items?: Content } = {}) => ` <tr>
+  listStyle = 'none',
+}: { items?: Content; listStyle?: ListStyle } = {}) => ` <tr>
       <td style="border-collapse: collapse">
         <ul
           style="
             margin: 0;
-            padding: 0;
-            list-style: none;
+            padding: ${listStyle === 'disc' ? SPACING.discListPadding : 0};
+            list-style: ${listStyle};
             color: ${COLORS.text};
             font-family: ${FONT_FAMILY};
             font-size: ${TEXT.fontSize}px;

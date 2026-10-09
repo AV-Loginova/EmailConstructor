@@ -34,4 +34,5 @@ export const SPACING = {
   backgroundHeight: 14,
   backgroundPadding: '18px 16px',
   listItemPadding: '2px 0 2px 6px',
+  discListPadding: '0 0 0 20px',
 } as const;
