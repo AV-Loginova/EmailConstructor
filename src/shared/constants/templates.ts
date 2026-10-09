@@ -10,12 +10,12 @@ export interface Template {
 }
 
 export const templates: Template[] = [
-  {
-    id: 1,
-    name: 'marketing',
-    title: 'Marketing template',
-    value: templateMarketing,
-  },
+  // {
+  //   id: 1,
+  //   name: 'marketing',
+  //   title: 'Marketing template',
+  //   value: templateMarketing,
+  // },
   {
     id: 2,
     name: 'system',

@@ -133,7 +133,7 @@ export const templateMarketing = `
                                     width="496"
                                   ></td>
                                 </tr>
-                                <!-- Тело здесь -->
+                                <!-- Тело письма -->
                                 <tr>
                                   <td
                                     height="33"

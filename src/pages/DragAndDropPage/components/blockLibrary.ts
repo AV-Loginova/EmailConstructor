@@ -29,7 +29,8 @@ export const blockLibrary: BlockDefinition[] = [
   {
     type: 'heading',
     label: 'Заголовок',
-    description: 'Крупный заголовок для начала письма или нового смыслового блока.',
+    description:
+      'Крупный заголовок для начала письма или нового смыслового блока.',
     badge: 'Text',
     accent: '#0E0142',
     createBlock: () => ({
@@ -41,7 +42,8 @@ export const blockLibrary: BlockDefinition[] = [
   {
     type: 'paragraph',
     label: 'Параграф',
-    description: 'Обычный текстовый блок для объяснения предложения или контекста.',
+    description:
+      'Обычный текстовый блок для объяснения предложения или контекста.',
     badge: 'Copy',
     accent: '#2563eb',
     createBlock: () => ({
@@ -53,7 +55,8 @@ export const blockLibrary: BlockDefinition[] = [
   {
     type: 'button',
     label: 'Кнопка',
-    description: 'CTA-блок с коротким действием, которое можно поменять прямо в превью.',
+    description:
+      'CTA-блок с коротким действием, которое можно поменять прямо в превью.',
     badge: 'CTA',
     accent: '#7c3aed',
     createBlock: () => ({
@@ -78,7 +81,8 @@ export const blockLibrary: BlockDefinition[] = [
   {
     type: 'divider',
     label: 'Разделитель',
-    description: 'Тонкая линия, которая помогает визуально разделять секции письма.',
+    description:
+      'Тонкая линия, которая помогает визуально разделять секции письма.',
     badge: 'Layout',
     accent: '#64748b',
     createBlock: () => ({
@@ -89,7 +93,8 @@ export const blockLibrary: BlockDefinition[] = [
   {
     type: 'spacer',
     label: 'Отступ',
-    description: 'Пустое пространство между блоками для более свободной композиции письма.',
+    description:
+      'Пустое пространство между блоками для более свободной композиции письма.',
     badge: 'Space',
     accent: '#16a34a',
     createBlock: () => ({

@@ -33,8 +33,8 @@ const DragDropExample = () => {
               </h1>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-base-content/70">
                 Песочница живет отдельно от основного редактора: здесь можно
-                собирать письмо из блоков, менять шаблон и открывать итоговый preview
-                в максимально близком к email-вёрстке виде.
+                собирать письмо из блоков, менять шаблон и открывать итоговый
+                preview в максимально близком к email-вёрстке виде.
               </p>
             </div>
           </div>
@@ -51,7 +51,8 @@ const DragDropExample = () => {
             <div className="mb-4">
               <h2 className="text-lg font-semibold">Блоки письма</h2>
               <p className="mt-2 text-sm leading-6 text-base-content/70">
-                Перетаскивайте элементы в письмо или между существующими секциями.
+                Перетаскивайте элементы в письмо или между существующими
+                секциями.
               </p>
             </div>
 

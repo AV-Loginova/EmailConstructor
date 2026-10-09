@@ -7,6 +7,8 @@ import { toggleTheme } from '@store/themeSlice';
 import TranslationPage from '@pages/TranslationPage/TranslationPage';
 import DragAndDropPage from '@pages/DragAndDropPage/DragAndDropPage';
 import MainPage from '@pages/MainPage/MainPage';
+import BuilderPage from '@pages/BuilderPage/BuilderPage';
+import TranslationsHelpPage from '@pages/TranslationsHelpPage/TranslationsHelpPage';
 
 import Toggle from '@ui/Toggle';
 
@@ -23,6 +25,11 @@ const App = () => {
         <Route path="/" element={<MainPage />} />
         <Route path="/translate" element={<TranslationPage />} />
         <Route path="/dndtest" element={<DragAndDropPage />} />
+        <Route path="/builder" element={<BuilderPage />} />
+        <Route
+          path="/builder/translations-help"
+          element={<TranslationsHelpPage />}
+        />
       </Routes>
       <section className="absolute bottom-1 left-3">
         <Toggle

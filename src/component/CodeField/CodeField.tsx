@@ -35,6 +35,8 @@ const CodeField: React.FC<CodeFieldProps> = ({
     if (isClicked && editorRef.current) {
       handleInsertCode();
     }
+    // Insert only on a new click, not on every re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isClicked]);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ const CodeField: React.FC<CodeFieldProps> = ({
       });
       editor.focus();
     }
-  }, [localStorage]);
+  }, []);
 
   const clearLocalStorage = () => {
     const currentTemplate = localStorage.getItem('currentTemplate');
@@ -84,7 +86,7 @@ const CodeField: React.FC<CodeFieldProps> = ({
     }
   };
 
-  const handleCodeChange = (editor: string, data: string, value: string) => {
+  const handleCodeChange = (_editor: string, _data: string, value: string) => {
     setHtmlCode(value);
     localStorage.setItem('mail', JSON.stringify(value));
   };
