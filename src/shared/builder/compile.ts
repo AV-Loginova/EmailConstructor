@@ -1,14 +1,22 @@
 import {
   raw,
+  renderBackground,
   renderButtonRow,
   renderHeading,
+  renderImage,
   renderLink,
   renderList,
   renderListItem,
   renderNewLine,
   renderParagraph,
 } from '@shared/snippets/render';
-import { COLORS, FONT_FAMILY, SPACING, TEXT } from '@shared/snippets/styles';
+import {
+  COLORS,
+  FONT_FAMILY,
+  HEADING,
+  SPACING,
+  TEXT,
+} from '@shared/snippets/styles';
 import {
   insertBody,
   SALES_BODY_WIDTH,
@@ -159,6 +167,47 @@ const renderBlockButtons = (row: DocNode) =>
       )
     : '';
 
+// «Новая строка» is the snippets' slot for images; a link wraps the picture itself.
+const renderBlockImage = (node: DocNode) => {
+  const img = renderImage({
+    src: String(node.attrs?.src ?? ''),
+    alt: String(node.attrs?.alt ?? ''),
+  }).trim();
+  const href = String(node.attrs?.href ?? '');
+  return renderNewLine({ content: raw(href ? plainLink(img, href) : img) });
+};
+
+// Inside the plate there are no table rows: blocks are bare tags that inherit the snippet's font.
+const renderBackgroundChild = (node: DocNode) => {
+  switch (node.type) {
+    case 'paragraph':
+      return `<p style="margin: 0">${renderInline(node.content) || '<br />'}</p>`;
+    case 'heading':
+      return `<p style="margin: 0; font-size: ${HEADING.fontSize}px; font-weight: ${HEADING.fontWeight}; line-height: ${HEADING.lineHeight}px">${renderInline(node.content)}</p>`;
+    case 'bulletList': {
+      const disc = node.attrs?.listStyle === 'disc';
+      const items = (node.content ?? [])
+        .map(
+          (item) =>
+            `<li style="padding: ${SPACING.listItemPadding}">${(
+              item.content ?? []
+            )
+              .map((child) => renderInline(child.content))
+              .join('<br />')}</li>`
+        )
+        .join('');
+      return `<ul style="margin: 0; padding: ${disc ? SPACING.discListPadding : 0}; list-style: ${disc ? 'disc' : 'none'}">${items}</ul>`;
+    }
+    default:
+      return '';
+  }
+};
+
+const renderBlockBackground = (node: DocNode) =>
+  renderBackground({
+    content: raw((node.content ?? []).map(renderBackgroundChild).join('')),
+  });
+
 const renderBlock = (node: DocNode) => {
   switch (node.type) {
     case 'paragraph':
@@ -174,6 +223,10 @@ const renderBlock = (node: DocNode) => {
       });
     case 'buttonRow':
       return renderBlockButtons(node);
+    case 'image':
+      return renderBlockImage(node);
+    case 'background':
+      return renderBlockBackground(node);
     default:
       return '';
   }
@@ -226,6 +279,10 @@ const renderPlainBlock = (node: DocNode): string => {
     }
     case 'buttonRow':
       return renderBlockButtons(node);
+    case 'image':
+      return renderBlockImage(node);
+    case 'background':
+      return renderBlockBackground(node);
     default:
       return '';
   }

@@ -246,6 +246,11 @@ const translateBlock = (node: DocNode, t: Translator): DocNode => {
         ...node,
         content: (node.content ?? []).map((item) => translateListItem(item, t)),
       };
+    case 'background':
+      return {
+        ...node,
+        content: (node.content ?? []).map((child) => translateBlock(child, t)),
+      };
     default:
       return node;
   }

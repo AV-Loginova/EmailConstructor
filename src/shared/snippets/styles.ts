@@ -29,6 +29,8 @@ export const BUTTON = {
   gap: 16,
 } as const;
 
+export const BACKGROUND = { borderRadius: 16 } as const;
+
 export const SPACING = {
   newLineHeight: 22,
   paragraphHeight: 15,

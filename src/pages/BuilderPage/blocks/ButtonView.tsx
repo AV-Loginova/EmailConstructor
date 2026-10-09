@@ -2,12 +2,14 @@ import { NodeViewProps } from '@tiptap/react';
 
 import BlockFrame from './BlockFrame';
 
-const ButtonView = ({ node, updateAttributes, deleteNode }: NodeViewProps) => {
+const ButtonView = (props: NodeViewProps) => {
+  const { node, updateAttributes, deleteNode } = props;
   const text = String(node.attrs.text ?? '');
   const href = String(node.attrs.href ?? '');
 
   return (
     <BlockFrame
+      view={props}
       popover={
         <label>
           URL

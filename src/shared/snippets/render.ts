@@ -1,4 +1,5 @@
 import {
+  BACKGROUND,
   BUTTON,
   COLORS,
   EMAIL_WIDTH,
@@ -193,15 +194,16 @@ export const renderListItem = ({
       </li>
   `;
 
+// A <div>, not a <p>: the content may hold paragraphs and lists.
 export const renderBackground = ({
   content: inner = raw('<!-- Я элемент с фоном -->'),
 }: { content?: Content } = {}) => ` <tr>
     <td
       height="${SPACING.backgroundHeight}"
       width="${EMAIL_WIDTH}"
-      style="height: ${SPACING.backgroundHeight}px; width: ${EMAIL_WIDTH}px; line-height: ${TEXT.lineHeight}px; border-collapse: collapse; background-color: ${COLORS.background}"
+      style="height: ${SPACING.backgroundHeight}px; width: ${EMAIL_WIDTH}px; line-height: ${TEXT.lineHeight}px; border-collapse: collapse; border-radius: ${BACKGROUND.borderRadius}px; background-color: ${COLORS.background}"
     >
-      <p style="
+      <div style="
           padding: ${SPACING.backgroundPadding};
           border-collapse: collapse;
           color: ${COLORS.text};
@@ -212,7 +214,7 @@ export const renderBackground = ({
           margin: 0;
           ">
 ${content(inner)}
-      </p>
+      </div>
     </td>
   </tr>
   `;

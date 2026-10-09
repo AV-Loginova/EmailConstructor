@@ -1,4 +1,5 @@
 import {
+  BACKGROUND,
   BUTTON,
   COLORS,
   EMAIL_WIDTH,
@@ -162,9 +163,13 @@ export const editorStyles = `
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     font: 12px/16px ${FONT_FAMILY};
     color: ${COLORS.text};
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
   .builder-block__popover label {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 6px;
   }
@@ -174,6 +179,69 @@ export const editorStyles = `
     border: 1px solid #c9c2e8;
     border-radius: 4px;
     font: inherit;
+  }
+  .builder-block__actions {
+    display: flex;
+    gap: 6px;
+  }
+  .builder-block__actions button {
+    padding: 2px 8px;
+    border: 1px solid #c9c2e8;
+    border-radius: 4px;
+    background: #ffffff;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .builder-block__actions button:hover {
+    background: #ece8fb;
+  }
+  .ProseMirror .email-image {
+    display: block;
+    width: ${EMAIL_WIDTH}px;
+    max-width: none;
+  }
+  .ProseMirror .email-image.is-placeholder {
+    box-sizing: border-box;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #c9c2e8;
+    background: ${COLORS.background};
+    color: ${COLORS.textMuted};
+    font: ${TEXT.fontSize}px ${FONT_FAMILY};
+  }
+  .ProseMirror .node-image.ProseMirror-selectednode .email-image {
+    outline: 2px solid ${COLORS.link};
+    outline-offset: 2px;
+  }
+  .ProseMirror .email-background {
+    padding: ${SPACING.backgroundPadding};
+    border-radius: ${BACKGROUND.borderRadius}px;
+    background: ${COLORS.background};
+  }
+  /* The plate keeps the snippet look in every skeleton, sales included. */
+  :host .ProseMirror .email-background :is(p, h2, ul) {
+    color: ${COLORS.text};
+  }
+  :host .ProseMirror .email-background h2 {
+    font-size: ${HEADING.fontSize}px;
+    line-height: ${HEADING.lineHeight}px;
+  }
+  :host .ProseMirror .email-background li {
+    padding: ${SPACING.listItemPadding};
+  }
+  :host .ProseMirror .email-background ul[data-list-style='disc'] {
+    padding: ${SPACING.discListPadding};
+  }
+  :host .ProseMirror .email-background a {
+    color: ${COLORS.link};
+    text-decoration: revert;
+  }
+  .ProseMirror .node-background.ProseMirror-selectednode .email-background {
+    outline: 2px solid ${COLORS.link};
+    outline-offset: 2px;
   }
   .ProseMirror .node-button.ProseMirror-selectednode .email-button {
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px ${COLORS.link};
