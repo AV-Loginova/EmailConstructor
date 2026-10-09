@@ -42,6 +42,9 @@ const MainPage: React.FC = () => {
         <Link className="btn btn-neutral" to="/translate">
           Перевести
         </Link>
+        <Link className="btn btn-neutral" to="/builder">
+          Конструктор
+        </Link>
       </div>
       <Select onChange={handleSelectChange} templates={templates} />
       <h1 className="text-[32px] font-bold mb-2">Email constructor</h1>

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
 import { templates } from '@shared/constants/templates';
@@ -41,14 +47,16 @@ const templatePresets: Record<TemplateName, TemplatePreset> = {
     name: 'marketing',
     eyebrow: 'Marketing template',
     title: 'Продуктовый анонс или промо-письмо',
-    subtitle: 'Большой hero, мягкий футер и заметный CTA как в маркетинговых письмах.',
+    subtitle:
+      'Большой hero, мягкий футер и заметный CTA как в маркетинговых письмах.',
     topLink: 'View product',
     headerClassName: 'bg-base-100',
     heroClassName: 'bg-neutral text-neutral-content',
     noteClassName: 'bg-warning/15 text-warning-content',
     buttonClassName: 'bg-primary text-primary-content',
     footerTitle: 'kommo marketing team',
-    footerCopy: 'Use this footer area for legal text, social links and support contacts.',
+    footerCopy:
+      'Use this footer area for legal text, social links and support contacts.',
     footerLinks: ['Instagram', 'LinkedIn', 'YouTube'],
     previewBackgroundClassName: 'bg-base-200',
   },
@@ -63,7 +71,8 @@ const templatePresets: Record<TemplateName, TemplatePreset> = {
     noteClassName: 'bg-info/15 text-base-content',
     buttonClassName: 'bg-primary text-primary-content',
     footerTitle: 'Support and system notifications',
-    footerCopy: 'Place product help, settings links and formal email details here.',
+    footerCopy:
+      'Place product help, settings links and formal email details here.',
     footerLinks: ['Help center', 'Status page', 'Account settings'],
     previewBackgroundClassName: 'bg-base-300/50',
   },
@@ -71,14 +80,16 @@ const templatePresets: Record<TemplateName, TemplatePreset> = {
     name: 'sales',
     eyebrow: 'Sales template',
     title: 'Персональное письмо от менеджера',
-    subtitle: 'Более личная подача, карточка контакта и мягкий подвал с контактами.',
+    subtitle:
+      'Более личная подача, карточка контакта и мягкий подвал с контактами.',
     topLink: 'Book a call',
     headerClassName: 'bg-base-100',
     heroClassName: 'bg-secondary/15 text-base-content',
     noteClassName: 'bg-accent/15 text-base-content',
     buttonClassName: 'bg-neutral text-neutral-content',
     footerTitle: 'Sales contact footer',
-    footerCopy: 'Here can live the manager signature, title, CTA and extra contact details.',
+    footerCopy:
+      'Here can live the manager signature, title, CTA and extra contact details.',
     footerLinks: ['Email', 'Calendar', 'WhatsApp'],
     previewBackgroundClassName: 'bg-base-200',
   },
@@ -101,7 +112,10 @@ const starterBlocksByTemplate: Record<TemplateName, EmailBlock[]> = {
     createBlockByType('paragraph'),
   ],
   sales: [
-    { ...createBlockByType('heading'), text: 'Есть идея для вашего следующего письма' },
+    {
+      ...createBlockByType('heading'),
+      text: 'Есть идея для вашего следующего письма',
+    },
     {
       ...createBlockByType('paragraph'),
       text: 'Персонализируйте вступление и быстро соберите письмо с акцентом на диалог, пользу и следующий контакт.',
@@ -118,7 +132,8 @@ const escapeHtml = (value: string) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-const formatTextHtml = (value: string) => escapeHtml(value).replace(/\n/g, '<br />');
+const formatTextHtml = (value: string) =>
+  escapeHtml(value).replace(/\n/g, '<br />');
 
 const renderBlocksHtml = (blocks: EmailBlock[], preset: TemplatePreset) =>
   blocks
@@ -347,7 +362,9 @@ const CanvasBlock: React.FC<CanvasBlockProps> = ({
 
   const wrapperClassName = [
     'group relative rounded-[1.5rem] border bg-base-100/80 p-4 transition',
-    isSelected ? 'border-primary shadow-lg' : 'border-transparent hover:border-base-300',
+    isSelected
+      ? 'border-primary shadow-lg'
+      : 'border-transparent hover:border-base-300',
     isOver ? 'ring-2 ring-primary/25' : '',
   ].join(' ');
 
@@ -512,19 +529,26 @@ const EmailShell: React.FC<EmailShellProps> = ({
           isOverCanvas ? 'ring-2 ring-primary/30' : ''
         }`}
       >
-        <div className={`rounded-t-[2rem] border-b border-base-300 ${preset.headerClassName}`}>
+        <div
+          className={`rounded-t-[2rem] border-b border-base-300 ${preset.headerClassName}`}
+        >
           <div className="flex items-center justify-between px-6 py-5">
             <div className="text-sm font-semibold tracking-[0.22em] text-primary uppercase">
               kommo
             </div>
-            <button type="button" className="btn btn-ghost btn-sm pointer-events-none">
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm pointer-events-none"
+            >
               {preset.topLink}
             </button>
           </div>
         </div>
 
         <div className="px-4 pt-4 md:px-6 md:pt-6">
-          <div className={`rounded-[1.75rem] px-6 py-8 md:px-8 ${preset.heroClassName}`}>
+          <div
+            className={`rounded-[1.75rem] px-6 py-8 md:px-8 ${preset.heroClassName}`}
+          >
             <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">
               {preset.eyebrow}
             </p>
@@ -572,7 +596,11 @@ const EmailShell: React.FC<EmailShellProps> = ({
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {preset.footerLinks.map((link) => (
-                <button key={link} type="button" className="btn btn-ghost btn-sm pointer-events-none">
+                <button
+                  key={link}
+                  type="button"
+                  className="btn btn-ghost btn-sm pointer-events-none"
+                >
                   {link}
                 </button>
               ))}
@@ -585,8 +613,11 @@ const EmailShell: React.FC<EmailShellProps> = ({
 };
 
 const DropZone: React.FC = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateName>('marketing');
-  const [blocks, setBlocks] = useState<EmailBlock[]>(starterBlocksByTemplate.marketing);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<TemplateName>('marketing');
+  const [blocks, setBlocks] = useState<EmailBlock[]>(
+    starterBlocksByTemplate.marketing
+  );
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -659,7 +690,9 @@ const DropZone: React.FC = () => {
   }, []);
 
   const removeBlock = useCallback((id: string) => {
-    setBlocks((currentBlocks) => currentBlocks.filter((block) => block.id !== id));
+    setBlocks((currentBlocks) =>
+      currentBlocks.filter((block) => block.id !== id)
+    );
     setSelectedBlockId((currentId) => (currentId === id ? null : currentId));
   }, []);
 
@@ -671,9 +704,12 @@ const DropZone: React.FC = () => {
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
               Email shell
             </p>
-            <h2 className="text-xl font-semibold">Правдоподобный preview письма</h2>
+            <h2 className="text-xl font-semibold">
+              Правдоподобный preview письма
+            </h2>
             <p className="mt-2 text-sm leading-6 text-base-content/70">
-              Шаблон меняет хедер, герой и футер. Контент внутри можно собирать drag-and-drop.
+              Шаблон меняет хедер, герой и футер. Контент внутри можно собирать
+              drag-and-drop.
             </p>
           </div>
 
@@ -681,7 +717,9 @@ const DropZone: React.FC = () => {
             <select
               className="select select-bordered w-full max-w-xs"
               value={selectedTemplate}
-              onChange={(event) => setSelectedTemplate(event.target.value as TemplateName)}
+              onChange={(event) =>
+                setSelectedTemplate(event.target.value as TemplateName)
+              }
             >
               {templates.map((template) => (
                 <option key={template.id} value={template.name}>
@@ -726,9 +764,12 @@ const DropZone: React.FC = () => {
           <div className="modal-box h-[85vh] w-11/12 max-w-6xl bg-base-100 p-4 md:p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
-                <h3 className="text-lg font-semibold">Финальный preview письма</h3>
+                <h3 className="text-lg font-semibold">
+                  Финальный preview письма
+                </h3>
                 <p className="mt-1 text-sm text-base-content/70">
-                  Это приближённый итоговый вид письма в HTML-оболочке выбранного шаблона.
+                  Это приближённый итоговый вид письма в HTML-оболочке
+                  выбранного шаблона.
                 </p>
               </div>
               <button

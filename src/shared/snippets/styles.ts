@@ -13,7 +13,11 @@ export const COLORS = {
 
 export const TEXT = { fontSize: 16, fontWeight: 400, lineHeight: 20 } as const;
 
-export const HEADING = { fontSize: 24, fontWeight: 700, lineHeight: 28 } as const;
+export const HEADING = {
+  fontSize: 24,
+  fontWeight: 700,
+  lineHeight: 28,
+} as const;
 
 export const BUTTON = {
   height: 40,

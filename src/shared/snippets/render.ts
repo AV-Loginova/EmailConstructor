@@ -103,7 +103,10 @@ export const renderHeading = ({
 export const renderButton = ({
   text = 'Я кнопка',
   href = '',
-}: { text?: Content; href?: string } = {}) => `<tr height="${BUTTON.height}" style="height:${BUTTON.height}px"><td align="left">
+}: {
+  text?: Content;
+  href?: string;
+} = {}) => `<tr height="${BUTTON.height}" style="height:${BUTTON.height}px"><td align="left">
       <table border="0" cellpadding="0" cellspacing="0">
         <tbody>
           <tr height="${BUTTON.height}" style="height: ${BUTTON.height}px">
