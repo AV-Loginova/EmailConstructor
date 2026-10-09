@@ -82,6 +82,15 @@ const linkHref = (node: DocNode) => {
   return typeof href === 'string' ? href : null;
 };
 
+// Kept from an imported letter: its own look wins over the snippet's.
+const linkStyle = (node: DocNode) => {
+  const style = findMark(node, 'link')?.attrs?.style;
+  return typeof style === 'string' && style ? style : null;
+};
+
+const styledLink = (inner: string, href: string, style: string) =>
+  `<a href="${escapeAttr(href)}" style="${escapeAttr(style)}" target="_blank" rel="noopener noreferrer">${inner}</a>`;
+
 // Variables leave as typed: Kommo substitutes `{{…}}` in the final HTML.
 const inlineText = (node: DocNode) => {
   if (node.type === 'text') return node.text ?? '';
@@ -130,6 +139,7 @@ const renderInline = (nodes: DocNode[] = [], style = SNIPPET_INLINE) => {
       html += renderText(nodes[i++]);
       continue;
     }
+    const kept = linkStyle(nodes[i]);
     let inner = '';
     while (
       i < nodes.length &&
@@ -138,7 +148,7 @@ const renderInline = (nodes: DocNode[] = [], style = SNIPPET_INLINE) => {
     ) {
       inner += renderText(nodes[i++]);
     }
-    html += link(inner, href);
+    html += kept ? styledLink(inner, href, kept) : link(inner, href);
   }
   return html;
 };

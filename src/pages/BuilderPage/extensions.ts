@@ -46,6 +46,21 @@ const StyledBulletList = BulletList.extend({
   },
 });
 
+// A style kept on import must show in the editor and survive save/load.
+const StyledLink = Link.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      style: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('style'),
+        renderHTML: (attributes) =>
+          attributes.style ? { style: attributes.style } : {},
+      },
+    };
+  },
+});
+
 // No nested lists: email list items hold paragraphs only.
 const FlatListItem = ListItem.extend({ content: 'paragraph+' });
 
@@ -61,7 +76,7 @@ export const builderExtensions = (onEditLink: () => void) => [
   NodeId,
   UntranslatedHighlight,
   Bold,
-  Link.configure({
+  StyledLink.configure({
     openOnClick: false,
     autolink: false,
     isAllowedUri: isSafeHref,

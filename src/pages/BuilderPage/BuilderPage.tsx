@@ -22,6 +22,7 @@ import { SkeletonName } from '@shared/templates/skeleton';
 
 import BlockPalette from './components/BlockPalette';
 import FormattingToolbar from './components/FormattingToolbar';
+import ImportControl from './components/ImportControl';
 import PreviewModal from './components/PreviewModal';
 import ReportModal from './components/ReportModal';
 import SelectionBubbleMenu from './components/SelectionBubbleMenu';
@@ -48,6 +49,9 @@ const replaceDoc = (editor: Editor, doc: DocNode | undefined) => {
   );
   ensureNodeIds(editor);
 };
+
+const hasContent = (doc: DocNode | undefined) =>
+  !!doc?.content?.some((node) => node.type !== 'paragraph' || node.content);
 
 const RECOMPILE_DELAY = 300;
 
@@ -129,6 +133,28 @@ const BuilderPage = () => {
     setSkeleton(next);
   };
 
+  const importLetter = (target: SkeletonName, doc: DocNode) => {
+    if (!editor) return false;
+    const current =
+      target === skeleton ? editor.getJSON() : docsRef.current[target];
+    const title = SKELETONS.find(({ name }) => name === target)?.title;
+    if (
+      hasContent(current) &&
+      !window.confirm(
+        `Письмо каркаса ${title} будет заменено импортированным. Продолжить?`
+      )
+    )
+      return false;
+    if (target === skeleton) {
+      // Through a transaction, so ⌘Z brings the previous letter back.
+      editor.commands.setContent(doc, { emitUpdate: true });
+    } else {
+      docsRef.current = { ...docsRef.current, [target]: doc };
+      switchSkeleton(target);
+    }
+    return true;
+  };
+
   const compileDoc = () =>
     editor ? compile(editor.getJSON(), skeleton, table) : null;
 
@@ -179,6 +205,7 @@ const BuilderPage = () => {
             </option>
           ))}
         </select>
+        <ImportControl onImport={importLetter} />
         <TranslationsControl
           table={table}
           result={result}

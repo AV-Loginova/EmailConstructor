@@ -53,34 +53,38 @@ const hrefOf = (node: DocNode) => {
   return typeof href === 'string' ? href : null;
 };
 
+type LinkAttrs = Record<string, unknown>;
+
 // Adjacent nodes with one href are one link, matching how the renderer joins them.
-const linkHrefs = (nodes: DocNode[]) => {
-  const hrefs: string[] = [];
+// The whole attrs travel, so a kept link style survives translation.
+const originalLinks = (nodes: DocNode[]) => {
+  const links: LinkAttrs[] = [];
   let previous: string | null = null;
   nodes.forEach((node) => {
     const href = hrefOf(node);
-    if (href !== null && href !== previous) hrefs.push(href);
+    if (href !== null && href !== previous)
+      links.push(node.marks?.find((mark) => mark.type === 'link')?.attrs ?? {});
     previous = href;
   });
-  return hrefs;
+  return links;
 };
 
 // `[x](url)`: the URL is the translator's own, so a language can link to its localized page.
 const LINK = /\[([^\]]*)\](?:\(([^)]*)\))?/g;
 
 // A bracket without its own URL needs an original href; with all URLs given, the count may differ.
-const hasLinkMismatch = (cell: string, hrefs: string[]) => {
+const hasLinkMismatch = (cell: string, originals: LinkAttrs[]) => {
   const links = [...cell.matchAll(LINK)];
   return (
-    links.length !== hrefs.length && links.some(([, , url]) => !url?.trim())
+    links.length !== originals.length && links.some(([, , url]) => !url?.trim())
   );
 };
 
 // `*x*` → bold, `[x]` → the N-th original href, `[x](url)` → url; unmatched markers stay literal.
-const parseCell = (cell: string, hrefs: string[]): DocNode[] => {
+const parseCell = (cell: string, originals: LinkAttrs[]): DocNode[] => {
   const nodes: DocNode[] = [];
   let bold = false;
-  let link: string | null | undefined;
+  let link: LinkAttrs | null | undefined;
   let linkIndex = 0;
   // Where the `(url)` after the current link's `]` ends.
   let linkEnd = -1;
@@ -90,7 +94,7 @@ const parseCell = (cell: string, hrefs: string[]): DocNode[] => {
     if (!buffer) return;
     const marks: Mark[] = [];
     if (bold) marks.push({ type: 'bold' });
-    if (link) marks.push({ type: 'link', attrs: { href: link } });
+    if (link) marks.push({ type: 'link', attrs: link });
     const withMarks = marks.length ? { marks } : {};
     let last = 0;
     for (const match of buffer.matchAll(VARIABLE_TOKEN)) {
@@ -122,8 +126,8 @@ const parseCell = (cell: string, hrefs: string[]): DocNode[] => {
       const url = urlEnd > -1 ? cell.slice(close + 2, urlEnd).trim() : '';
       linkEnd = urlEnd;
       // Without a target the text stays plain: no link to nowhere.
-      const original = hrefs[linkIndex++] ?? null;
-      link = url && isSafeHref(url) ? url : original;
+      const original = originals[linkIndex++] ?? null;
+      link = url && isSafeHref(url) ? { ...original, href: url } : original;
     } else if (char === ']' && link !== undefined) {
       flush();
       link = undefined;
@@ -183,12 +187,12 @@ const createTranslator = (
     report.missing.push({ lang, source, reason });
   };
 
-  const apply = (cell: string, source: string, hrefs: string[]) => {
-    if (hasLinkMismatch(cell, hrefs) && !mismatched.has(source)) {
+  const apply = (cell: string, source: string, originals: LinkAttrs[]) => {
+    if (hasLinkMismatch(cell, originals) && !mismatched.has(source)) {
       mismatched.add(source);
       report.linkMismatch.push({ lang, source });
     }
-    return parseCell(cell, hrefs);
+    return parseCell(cell, originals);
   };
 
   const lookup = (unit: Unit) => {
@@ -206,7 +210,7 @@ const createTranslator = (
     inline: (nodes = [], id) => {
       const source = plainText(nodes).trim();
       const cell = lookup({ id, source });
-      return cell === null ? null : apply(cell, source, linkHrefs(nodes));
+      return cell === null ? null : apply(cell, source, originalLinks(nodes));
     },
     attr: (value, id) => {
       const cell = lookup({ id, source: value.trim() });
@@ -223,15 +227,17 @@ const createTranslator = (
       const row = isTranslatable(source) ? findRow(source) : null;
       const cell = row?.[column]?.trim();
       if (!cell) return null;
-      const hrefs = paragraphs.flatMap((paragraph) =>
-        linkHrefs(paragraph.content ?? [])
+      const originals = paragraphs.flatMap((paragraph) =>
+        originalLinks(paragraph.content ?? [])
       );
       // Line breaks in the cell become paragraphs again.
-      return splitLines(apply(cell, source, hrefs)).map((content, index) => ({
-        type: 'paragraph',
-        attrs: (paragraphs[index] ?? paragraphs[0]).attrs,
-        ...(content.length ? { content } : {}),
-      }));
+      return splitLines(apply(cell, source, originals)).map(
+        (content, index) => ({
+          type: 'paragraph',
+          attrs: (paragraphs[index] ?? paragraphs[0]).attrs,
+          ...(content.length ? { content } : {}),
+        })
+      );
     },
   };
 };
