@@ -6,6 +6,13 @@ import { EditorContent, useEditor } from '@tiptap/react';
 
 import { compile, DocNode } from '@shared/builder/compile';
 import { loadDraft, saveDraft } from '@shared/builder/draft';
+import {
+  buildCsv,
+  buildZip,
+  CSV_FILENAME,
+  downloadBlob,
+  ZIP_FILENAME,
+} from '@shared/builder/export';
 import { SkeletonName } from '@shared/templates/skeleton';
 
 import FormattingToolbar from './components/FormattingToolbar';
@@ -71,9 +78,26 @@ const BuilderPage = () => {
     setSkeleton(next);
   };
 
+  const compileDoc = () =>
+    editor ? compile(editor.getJSON(), skeleton, table) : null;
+
   const openPreview = () => {
-    if (!editor) return;
-    setPreviewHtml(compile(editor.getJSON(), skeleton, table).html.EN);
+    const result = compileDoc();
+    if (result) setPreviewHtml(result.html.EN);
+  };
+
+  const downloadZip = async () => {
+    const result = compileDoc();
+    if (result) downloadBlob(await buildZip(result), ZIP_FILENAME);
+  };
+
+  const downloadCsv = () => {
+    const result = compileDoc();
+    if (!result) return;
+    downloadBlob(
+      new Blob([buildCsv(result)], { type: 'text/csv;charset=utf-8' }),
+      CSV_FILENAME
+    );
   };
 
   const clearDraft = () => {
@@ -108,6 +132,12 @@ const BuilderPage = () => {
         </select>
         <button className="btn btn-ghost btn-sm ml-auto" onClick={clearDraft}>
           Очистить
+        </button>
+        <button className="btn btn-outline btn-sm" onClick={downloadZip}>
+          Скачать ZIP
+        </button>
+        <button className="btn btn-outline btn-sm" onClick={downloadCsv}>
+          Скачать CSV
         </button>
         <button className="btn btn-primary btn-sm" onClick={openPreview}>
           Предпросмотр
