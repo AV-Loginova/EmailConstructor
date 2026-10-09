@@ -20,6 +20,7 @@ import {
 } from '@shared/builder/export';
 import { SkeletonName } from '@shared/templates/skeleton';
 
+import BlockPalette from './components/BlockPalette';
 import FormattingToolbar from './components/FormattingToolbar';
 import PreviewModal from './components/PreviewModal';
 import ReportModal from './components/ReportModal';
@@ -203,7 +204,9 @@ const BuilderPage = () => {
         </button>
       </header>
       <div className="flex flex-1 min-h-0">
-        <aside className="w-48 shrink-0 border-r border-base-300 p-2" />
+        <aside className="w-48 shrink-0 border-r border-base-300 p-2">
+          {editor && <BlockPalette editor={editor} />}
+        </aside>
         <main className="flex-1 overflow-auto px-6 pb-6 flex flex-col items-center">
           {editor && (
             <div className="sticky top-0 z-10 py-3">

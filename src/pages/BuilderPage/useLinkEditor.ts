@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { NodeSelection } from '@tiptap/pm/state';
 import { Editor } from '@tiptap/react';
 
 export interface LinkEditor {
@@ -9,8 +10,13 @@ export interface LinkEditor {
   remove: () => void;
 }
 
+// A selected palette block has its own settings, text formatting doesn't apply to it.
+const isBlockSelected = ({ state: { selection } }: Editor) =>
+  selection instanceof NodeSelection && selection.node.isBlock;
+
 export const canEditLink = (editor: Editor) =>
-  !editor.state.selection.empty || editor.isActive('link');
+  !isBlockSelected(editor) &&
+  (!editor.state.selection.empty || editor.isActive('link'));
 
 export const useLinkEditor = (editor: Editor | null): LinkEditor => {
   const [isEditing, setIsEditing] = useState(false);

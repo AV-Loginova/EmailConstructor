@@ -10,8 +10,10 @@ import {
 } from '@tiptap/extension-list';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
-import { Placeholder, UndoRedo } from '@tiptap/extensions';
+import { Gapcursor, Placeholder, UndoRedo } from '@tiptap/extensions';
 
+import { PALETTE_BLOCKS } from './blocks';
+import { DropIndicator } from './blocks/dropIndicator';
 import { NodeId } from './nodeId';
 import { UntranslatedHighlight } from './untranslatedHighlight';
 import { Variable } from './variable';
@@ -57,6 +59,7 @@ export const builderExtensions = (onEditLink: () => void) => [
   StyledBulletList,
   FlatListItem,
   Variable,
+  ...PALETTE_BLOCKS.flatMap(({ extensions }) => extensions),
   NodeId,
   UntranslatedHighlight,
   Bold,
@@ -66,6 +69,8 @@ export const builderExtensions = (onEditLink: () => void) => [
     isAllowedUri: isSafeHref,
   }),
   UndoRedo,
+  DropIndicator,
+  Gapcursor,
   Placeholder.configure({ placeholder: 'Начните писать письмо…' }),
   Extension.create({
     name: 'linkShortcut',

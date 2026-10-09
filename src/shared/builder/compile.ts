@@ -1,5 +1,6 @@
 import {
   raw,
+  renderButtonRow,
   renderHeading,
   renderLink,
   renderList,
@@ -147,6 +148,17 @@ const renderListItems = (list: DocNode) =>
     )
     .join('');
 
+// Same snippet in every skeleton: a button is a button even in a plain sales letter.
+const renderBlockButtons = (row: DocNode) =>
+  row.content?.length
+    ? renderButtonRow(
+        row.content.map((button) => ({
+          text: String(button.attrs?.text ?? ''),
+          href: String(button.attrs?.href ?? ''),
+        }))
+      )
+    : '';
+
 const renderBlock = (node: DocNode) => {
   switch (node.type) {
     case 'paragraph':
@@ -160,6 +172,8 @@ const renderBlock = (node: DocNode) => {
         items: raw(renderListItems(node)),
         listStyle: node.attrs?.listStyle === 'disc' ? 'disc' : 'none',
       });
+    case 'buttonRow':
+      return renderBlockButtons(node);
     default:
       return '';
   }
@@ -210,6 +224,8 @@ const renderPlainBlock = (node: DocNode): string => {
         .join('');
       return plainRow(`<ul style="${style}">${items}</ul>`);
     }
+    case 'buttonRow':
+      return renderBlockButtons(node);
     default:
       return '';
   }

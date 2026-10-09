@@ -100,27 +100,44 @@ export const renderHeading = ({
   </tr>
   `;
 
-export const renderButton = ({
-  text = 'Я кнопка',
-  href = '',
-}: {
-  text?: Content;
-  href?: string;
-} = {}) => `<tr height="${BUTTON.height}" style="height:${BUTTON.height}px"><td align="left">
-      <table border="0" cellpadding="0" cellspacing="0">
-        <tbody>
-          <tr height="${BUTTON.height}" style="height: ${BUTTON.height}px">
-            <td align="center" bgcolor="${COLORS.buttonBg}" style="border-radius:${BUTTON.borderRadius}px">
+const buttonCell = (text: Content, href: string) =>
+  `<td align="center" bgcolor="${COLORS.buttonBg}" style="border-radius:${BUTTON.borderRadius}px">
               <a href="${escapeAttr(href)}" rel="noopener noreferrer" target="_blank" style="background-color:${COLORS.buttonBg};border-color:${COLORS.buttonBg};border-radius:${BUTTON.borderRadius}px;border-style:solid;border-width:${BUTTON.borderWidth};color:${COLORS.buttonText} !important;font-family:${FONT_FAMILY};font-size:${BUTTON.fontSize}px;font-weight:${BUTTON.fontWeight};text-decoration:none" data-link-id="26">
                 ${content(text)}
               </a>
-            </td>
+            </td>`;
+
+const buttonGap = `
+            <td width="${BUTTON.gap}" style="width:${BUTTON.gap}px"></td>
+            `;
+
+const buttonFrame = (
+  cells: string
+) => `<tr height="${BUTTON.height}" style="height:${BUTTON.height}px"><td align="left">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+          <tr height="${BUTTON.height}" style="height: ${BUTTON.height}px">
+            ${cells}
           </tr>
         </tbody>
       </table>
     </td>
   </tr>
   `;
+
+export const renderButton = ({
+  text = 'Я кнопка',
+  href = '',
+}: {
+  text?: Content;
+  href?: string;
+} = {}) => buttonFrame(buttonCell(text, href));
+
+// Several buttons side by side: the Кнопка snippet with one cell per button.
+export const renderButtonRow = (buttons: { text: Content; href: string }[]) =>
+  buttonFrame(
+    buttons.map(({ text, href }) => buttonCell(text, href)).join(buttonGap)
+  );
 
 export const renderLink = ({
   text = 'Я ссылка',

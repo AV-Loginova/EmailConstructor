@@ -25,6 +25,8 @@ export const BUTTON = {
   borderWidth: '12px 32px',
   fontSize: 16,
   fontWeight: 700,
+  // Space between buttons sharing a row.
+  gap: 16,
 } as const;
 
 export const SPACING = {
